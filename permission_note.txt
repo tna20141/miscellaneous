@@ -1,0 +1,11 @@
+some notes about file/directory permissions:
+
+removing a file only requires having write (and execute) permissions on the parent directory (if file is not writable rm will ask if the user wants to remove write-protected file)
+changing directory's content (rename, add file, remove file) requires bot write and execute permissions on the directory
+read permission on a directory only allows listing file names in that directory
+(only) execute permission on directories is required to access their files (read, write, execute)
+changing a file's permission doesn't count as changing the parent directory's content
+sticky bit is ignored on files
+sticky bit on a directory prevents users from deleting or renaming the files, unless the user is the owner of the directory, the owner of the file of the superuser
+on many systems, setuid and setgid bits work with executable files don't work with script files (for security purposes)
+12 permission bits: (setuid setgid stickybit) (rwx for user) (rwx for group) (rwx for other)
