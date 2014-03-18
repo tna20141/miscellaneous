@@ -1,0 +1,7 @@
+MISCELLANEOUS NOTES
+===================
+
+Changing EIP: gcc won't allow, Internet says it can't be changed arbitrarily by programers (only
+through instructions like jmp), but it can be set manually in gdb.
+
+----------------
