@@ -5,3 +5,6 @@ Changing EIP: gcc won't allow, Internet says it can't be changed arbitrarily by 
 through instructions like jmp), but it can be set manually in gdb.
 
 ----------------
+
+When executing a script (or a program, I suppose), the "./" or current directory will be the
+current executing directory, not the executable file's directory.
