@@ -1,0 +1,89 @@
+FIND COMMAND
+============
+
+This note summarizes some of the common uses of the "find" command. Beware that some info in this
+note are based on testing done on Ubuntu 14.04. Maynot work or behave differently for other
+distributions.
+
+1. Basic format
+find [options] [start_dir] [expressions]
+	expressions: expression joined by operators
+	expression: [options] [tests] [actions]
+
+Default start directory is current directory. The ".." entries are never examined.
+
+2. Options
+-P (default): dont follow symlinks.
+-L: follow symlinks.
+-H: follow only symlinks on the command line arguments. 
+
+2. Expressions
+2.1. Options
+-d | -depth: process directory's content before the directory itself.
+-maxdepth <levels>: -maxdepth 0 only applies expression on the start directory.
+-mindepth <levels>: use -mindepth 1 to exclude the start directory (but not its content) from the
+	results. For example, "find -mindepth 1 ." will exclude "." from the result.
+-mount | -xdev: dont descend directories on other filesystems.
+
+2.2. Tests
+-amin (also -cmin, -mmin) <n>: file was last accessed (or changed, modified) n minutes ago. Useful
+	command: "find . -cmin -1", "find . -amin -1" (good when finding files just copied or
+	extracted. These will most likely include the archive file in the results. -mmin -1 will
+	exclude it from the results).
+-atime (also -ctime, -mtime) <n>: same as -amin, -cmin, -mmin, but work with hours.
+Note: the time number can exceed 60 (for minute) and 24 (for hour).
+
+-anewer <f>: find files that were ACCESSED after "f" was last modified. "find . -anewer z.tar" will
+	include z.tar in the results.
+-cnewer <f>: find files that were CHANGED after "f" was last modified. "find . -cnewer z.tar" will
+	exclude z.tar from the results.
+-newer <f>: find files that were MODIFIED after "f" was last modified. "find . -newer z.tar" will
+	return nothing (at least on normal operations).
+
+-name <pattern>: find based on basename.
+-path | -wholename <pattern>: find based on whole path. Example: (find . -path "./sr*sc") may
+	return "./src/misc"
+-lname <pattern>: find based on symbolic link's content (yes the file examined must be a slink).
+-iname, -ipath, -iwholename, -ilname: case insensitive variations of the aboves.
+
+Other useful tests: permission, samefile, size, ways true/false, fstype, inode, user, group,
+	filetype... See man page for these.
+
+2.3. Actions
+-delete: implies "-depth" option.
+
+-exec <command> ; : execute command on every hit. Arguments before the semicolon are taken as the
+	command's arguments. "{}" are replaced by the filename being processed. The command is 
+	executed at the start directory. Note that the semicolon needs shell escape: '\;'.
+-exec <command> {} + : same as above, but command is executed only once (I think), the filenames 
+	are appended to the end like when using xargs.
+-execdir <command> { ; | {} + } : same as aboves, but execute command at the directory containing
+	the matched file, not the start directory.
+-ok <command> ; | -okdir <command> ; : same, but ask user for confirmation.
+
+-print: print full filenames: file1'\n'file2'\n'file3'\n'
+-print0: same, but: file1'\0'file2'\0'file3'\0'
+-printf <format>: printf style. Almost every info it can display can be displayed by 'ls', so only
+	thing I find useful is to display mactime: find <file> -printf "%t | %a | %c\n"
+-fprint | -fprint0 | -fprintf <file> [format]: same, but output to file.
+
+-quit: quit at first match (I suppose). Still execute the other actions before quitting.
+
+-prune: stop descending into the matched directory.
+
+2.4. Operators
+- expr1 expr2 | expr1 -a expr2 : and. If expr1 is false, expr2 is not evaluated.
+- expr1 -o expr 2: or. If expr1 is true, expr2 is not evaluated.
+- ! expr : not operator.
+- expr1 , expr2 : list. All expressions evaluated, but only the last (expr2) is returned.
+
+2.5. Useful combinations
+This sections contain some templates for the find command, can be used as a cheatsheet. More
+combinations can be added later on if deemed useful.
+
+find "dir" -name "filename" : the basic.
+find "dir" -name "filename" -printf "%t | %a | %c\n" : print mactime of files.
+find "dir" -mindepth 1 ... : exclude the start directory.
+find "dir" -anewer "archive.tar" -delete : remove archive.tar's extracted files and itself.
+find "dir" -cnewer "archive.tar" -delete : remove archive.tar's extracted files (but not itself).
+find "dir" { -amin | -cmin | -tmin } -1 -delete : remove files just twitched not long ago.
