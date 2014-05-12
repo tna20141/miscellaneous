@@ -1,0 +1,56 @@
+Some useful tips on hexdump
+---------------------------
+
+Most common use (for viewing): hexdump -C
+---------------
+
+Hexdump using format:
+--------------------
+	hexdump -v -e '"<start str>" <icount>/<bcount> "<format str>" "<end str>"'
+
+<start str>: string starting each format
+<end str>: string ending each format
+<bcount>: number of bytes for each iteration (endianness applies here). Through testing I suppose
+	byte count can only be 1, 2 or 4.
+<icount>: number of iterations the format string is applied.
+<format str>: the format string as in printf, must be in double quotes. See the manual for details.
+
+Example to clarify hexdump:
+--------------------------
+cmd: echo abcdefgh | hexdump -v -e '"\\\x" 2/1 "%02x" " "'
+out: '\x6162 \x6364 \x6566 \x6768 \x0a   ' (the quotes are added for visibility)
+
+cmd: echo abcdefgh | hexdump -v -e '"\\\x" 2/2 "%02x" " "'
+out: '\x62616463 \x66656867 \x0a   ' (notice the little-endianness in every consecutive 2 bytes)
+
+cmd: echo abcdefgh | hexdump -v -e '1/2 "%d" " "'
+out: '25185 25699 26213 26727 10 ' (a = 97, b = 98, 25185 = 98*256 + 97)
+
+cmd: echo abcdefgh | hexdump -v -e '"[" 2/1 "%03o " "]\n"'
+out: '
+[141 142]
+[143 144]
+[145 146]
+[147 150]
+[012    ]
+' (notice that there is no space after the second number in each line)
+
+cmd: echo abcdefgh | hexdump -v -e '"[" 2/1 "%03o|" "]\n"'
+out: '
+[141|142|]
+[143|144|]
+[145|146|]
+[147|150|]
+[012|   |]
+' (this time the pipe character is displayed twice each line. I think the space char is special)
+
+Some useful hexdump cmds:
+------------------------
+cmd: echo abcdefgh | hexdump -v -e '"\\\x" 1/1 "%02x"'
+out: \x61\x62\x63\x64\x65\x66\x67\x68\x0a
+
+cmd: echo abcdefgh | hexdump -v -e '1/1 "%02X"'
+out: 61626364656667680A
+
+cmd: echo abcdefgh | hexdump -v -e '1/1 "%d" " "'
+out: '97 98 99 100 101 102 103 104 10 '
