@@ -3,6 +3,7 @@ Notes for ssh
 
 - Fingerprint is a hash of public key. It's permanent (as long as the public key doesnt change).
 - Fingerprint is for client to authenticate (quite manually) server.
+- Fuzzy fingerprint is a technique aiming at laziness when it comes to manual verification.
 - Client stores public keys of accepted hosts in ~/.ssh/known_hosts for later regconition.
 - Public & private keys of server can be found in /etc/ssh/. The file format is ASN1 BER/DER
 	encoded then base64 encoded.
