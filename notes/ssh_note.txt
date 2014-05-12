@@ -1,0 +1,23 @@
+Notes for ssh
+-------------
+
+- Fingerprint is a hash of public key. It's permanent (as long as the public key doesnt change).
+- Fingerprint is for client to authenticate (quite manually) server.
+- Client stores public keys of accepted hosts in ~/.ssh/known_hosts for later regconition.
+- Public & private keys of server can be found in /etc/ssh/. The file format is ASN1 BER/DER
+	encoded then base64 encoded.
+- ~/.ssh/authorized_keys is for server to authenticate clients. It contains the public keys of 
+	clients that the server authorizes (clients need to store their private keys in ~/.ssh).
+	This can be used to implement password-less login. Note that ~/.ssh/authorized_keys needs
+	to be WRITABLE by OWNER AND ROOT ONLY for this to work.
+
+- some options: -p [port] for remote port, -b [bind_addr] to use a local address as source address
+	(useful if local has more than 1 address).
+
+ssh tunneling: ssh -L [bind_addr:]port:remote_host:remote_port
+- bind_addr: default (not specified) is GatewayPorts in ssh config. If is "localhost", listening
+	port is for local use only. If is empty or "*", listening port is available from all
+	interfaces.
+- example: ssh -f user@remote1 -L 9876:remote2:25 -N. 'remote1' is the remote end of the tunnel
+	while 'remote2' is the service provider (whatever it is). If remote1 and remote2 are the
+	same then you can just specify remote2 as 'localhost'.
