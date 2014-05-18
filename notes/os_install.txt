@@ -1,0 +1,9 @@
+Some notes about installing a new OS, partitioning and stuff.
+
+- UEFI is the flashy mouse-based GUI system that is in the place of BIOS, but it's kinda like the
+	successor of BIOS (with blue background and texts).
+- The BIOS/GPT configuration is really messy. My laptop is BIOS-based and I can't install GPT on
+	it (there're some hacks to make this possible, but I've tried a lot and it just didn't
+	work). This is because BIOS is stupid when it comes to GPT.
+- In my laptop's BIOS I had to set boot secure mode to disabled and CSM mode to enabled to boot
+	from USB.
