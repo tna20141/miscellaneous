@@ -18,7 +18,7 @@ function swapf {
 	${__sudocmd}mv $tmp_name "$2"
 }
 
-# back up a file
+# back up a file or directory
 function bak {
 	local __sudocmd=""
 	local __base=0
@@ -47,7 +47,7 @@ function bak {
 				new_name="$base_name".bak"$count"
 			done
 		fi
-		${__sudocmd}cp "$base_name" "$new_name" -r
+		${__sudocmd}cp "$base_name" "$new_name" -R
 		shift
 	done
 }
