@@ -100,5 +100,8 @@ Result:
 The "server" works properly, forking a subprocess for each packet received. The IP protocol is 6
 (TCP). The reply is an IP packet enclosing a malformed TCP segment, whose content is just "aa\n".
 The IP raw socket is pretty much the same as UDP, just without the port specification.
-It's pretty much impractical to use socat to forward data between abitrary hosts. The non-listening
+[!] When using ip-recvfrom, ordinary IP traffic (from web browser, user applications...) will also
+be captured by socat. Although, the other applications seem to work fine. This behavior suggests
+that the data is accessible to all IP-listening instances.
+[!] It's pretty much impractical to use socat to forward data between abitrary hosts. The non-listening
 socket always needs a destination address to work.
