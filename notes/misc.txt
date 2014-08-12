@@ -8,3 +8,8 @@ through instructions like jmp), but it can be set manually in gdb.
 
 When executing a script (or a program, I suppose), the "./" or current directory will be the
 current executing directory, not the executable file's directory.
+
+----------------
+
+General rsync command:
+rsync -avs --delete [--dry-run] -r <user@host:absolute_path> <dest_local_path>
