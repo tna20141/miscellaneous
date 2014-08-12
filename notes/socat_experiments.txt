@@ -1,0 +1,104 @@
+Exp. #1:
+
+Description: test basic socat connections (tcp).
+
+Procedure:
+> TNA-PC2-UBUNTU$ netcat -l 1234
+> asusg-ubuntu$ netcat -l 1235
+> asusg-ubuntu$ socat tcp:192.168.7.40:1234 tcp:127.0.0.1:1235
+
+Result:
+Data transfer correctly. Note that if netcat servers aren't established, socat will fail.
+
+--------
+
+Exp. #2:
+
+Description: test basic socat tcp connect and tcp listen.
+
+Procedure:
+> asusg-ubuntu$ netcat -l 1235
+> asusg-ubuntu$ socat tcp:127.0.0.1:1235 tcp-listen:1234
+> TNA-PC2-UBUNTU$ netcat 192.168.7.42 1234
+
+Result:
+Data transfer correctly. When client terminates, socat and server also terminate.
+Without the 'fork' option, the second client request is rejected. The first one still works ok.
+
+Adding 'fork' option:
+If I add 'fork' option to tcp-listen, socat and server won't terminate when the netcat client
+terminates. Also, the next session works normally and the server doesn't seem to be disrupted
+after the first session terminated.
+When there are 2 or more connections to the netcat server, output from the server seems to go to
+the clients randomly (it may be the result of socat choosing which client connection to send the
+output to).
+
+--------
+
+Exp. #3:
+
+Description: test udp connections.
+
+Procedure:
+> asusg-ubuntu$ socat -u udp-listen:1235 gopen:./aa.txt
+> TNA-PC2-UBUNTU$ netcat 192.168.7.42 1235 -u -p 12345
+> TNA-PC2-UBUNTU$ ^C
+> TNA-PC2-UBUNTU$ netcat 192.168.7.42 1235 -u -p 12345
+
+Result:
+As expected of UDP, after shuting down the client and reconnect again (using the same port), the
+transfer still works properly. If using another port (meaning another udp socket), the server won't
+receive data. I guess that's the property of the socat's address type.
+
+--------
+
+Exp. #4:
+
+Description: test udp servers.
+
+Procedure:
+> asusg-ubuntu$ socat udp-recvfrom:1234,fork exec:"echo aa"		# server 1 (service)
+> asusg-ubuntu$ socat udp-recvfrom:1235,fork udp-sendto:127.0.0.1:1234	# server 2 (middle man)
+> TNA-PC2-UBUNTU$ netcat 192.168.7.42 1235 -u
+
+Result:
+Works ok, client receives "aa" after each request. Also, for each request, server 2 forks a new
+process and uses a different UDP source port to connect to server 1.
+Web server can be implemented similar to server 1.
+
+--------
+
+Exp. #5:
+
+Description: test simple ssh proxy.
+
+Procedure:
+> asusg-ubuntu$ sudo socat tcp-listen:23 tcp:192.168.7.40:22
+> TNA-PC2-UBUNTU$ ssh tna2@192.168.7.42 -p 23
+
+Result:
+Ssh works properly. After exiting the session, socat also terminates. Just like a normal TCP
+connection.
+The above server can be used as a https proxy (after changing the ports and ignore certificate
+validations). The real https server's location needs to be determined, though. Example:
+> $ sudo socat tcp-listen:443,fork tcp:web.vietcombank.com.vn:443
+
+Adding the 'fork' option to tcp-listen:
+Ssh works properly with many concurrent sessions. Exiting a session won't make socat terminate.
+
+--------
+
+Exp. #6:
+
+Description: test IP raw sockets.
+
+Procedure:
+> asusg-buntu$ sudo socat ip-recvfrom:6,fork system:"echo aa"
+> TNA-PC2-UBUNTU$ netcat 192.168.7.42 1234
+
+Result:
+The "server" works properly, forking a subprocess for each packet received. The IP protocol is 6
+(TCP). The reply is an IP packet enclosing a malformed TCP segment, whose content is just "aa\n".
+The IP raw socket is pretty much the same as UDP, just without the port specification.
+It's pretty much impractical to use socat to forward data between abitrary hosts. The non-listening
+socket always needs a destination address to work.
