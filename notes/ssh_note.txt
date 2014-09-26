@@ -1,5 +1,5 @@
 Notes for ssh
--------------
+=============
 
 - Fingerprint is a hash of public key. It's permanent (as long as the public key doesnt change).
 - Fingerprint is for client to authenticate (quite manually) server.
@@ -22,3 +22,8 @@ ssh tunneling: ssh -L [bind_addr:]port:remote_host:remote_port
 - example: ssh -f user@remote1 -L 9876:remote2:25 -N. 'remote1' is the remote end of the tunnel
 	while 'remote2' is the service provider (whatever it is). If remote1 and remote2 are the
 	same then you can just specify remote2 as 'localhost'.
+
+SSHFS: (sftp && fuse)
+- useful command:
+sshfs -o allow_other -o reconnect -o ServerAliveInterval=5 [user@]host:[dir] /mnt/point
+- other options: -o kernel_cache -o auto_cache -o cache_timeout=100
