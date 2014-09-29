@@ -1,0 +1,47 @@
+BASH NOTES
+==========
+
+Expansion
+---------
+
+- Inside double quotes: all special characters lose their meaning, except for: $ \ `
+- Inside single quotes: all expansions are suppressed
+
+- Curly brace expansions:
+	echo {1..5} {D..A} {-4..-1}
+	-> 1 2 3 4 5 D C B A -4 -3 -2 -1
+	echo a{A{1,2},B{3,4}}b
+	-> aA1b aA2b aB3b aB4b
+	echo {A..B}-{2..1}-{0..2}
+	-> A-2-0 A-2-1 A-2-2 A-1-0 A-1-1 A-1-2 B-2-0 B-2-1 B-2-2 B-1-0 B-1-1 B-1-2
+
+Glob (globbing pathnames)
+-------------------------
+
+- '?' matches any single character, '*' matches any (including empty) string.
+- '[...]': cannot be empty, therefore '[][!]' matches 3 characters: ']' and '[' and '!'
+- Character class: 'ls [[:digit:]]*' lists all files starting with a number.
+
+- Pathnames:
+	Globbing is applied on each component of a pathname separately
+	'/' CAN'T be matched by wildcards or ranges
+	If a filename starts with '.', this character must be matched explicitly
+	('rm *' WON'T remove .file)
+
+History
+-------
+
+- Useful commands: 'fc' or 'history'
+- !!: print and execute last command (!! = !-1)
+- !50: execute command with the history number 50
+- !-4: execute the 4th last command (with !-1 being the last command)
+- !ssh: execute the last command with the string 'ssh' at the beginning
+- !?search?: execute the last cmd with 'search' in it, e.g. 'apt-cache search'
+- ^hosst^hosts^: execute the last cmd with 'hosst' replaced by 'hosts' (only 1 time)
+	example: echo aa aaa + ^aa^bb^ = echo bb aaa
+- Interactive search: use ctrl-R
+
+Useful commands
+---------------
+
+- list directories only: ls -d /path/to/parent/*/
