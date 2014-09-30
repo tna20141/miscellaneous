@@ -3,6 +3,10 @@ Some useful tips on hexdump
 
 Most common use (for viewing): hexdump -C
 ---------------
+Some other useful options:
+	-v : DON'T replace identical data with '*'
+	-n <count>: display <count> bytes only
+	-s <offset>: skip the first <offset> bytes
 
 Hexdump using format:
 --------------------
