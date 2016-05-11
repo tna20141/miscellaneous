@@ -1,0 +1,411 @@
+" Note: the following packages should be installed in order for
+" all the plugins to work:
+" - git (Duh!)
+" - python & python3
+" - pip & pip3
+" - pip(2) install neovim && pip3 install neovim
+" - cmake
+" - nodejs & npm
+" - xclip
+" - ag
+" - clang (?)
+" - tidy (for html syntax checking)
+" - pug-lint npm module (for pug/jade syntax checking)
+" - jshint npm module (for js syntax checking)
+" - ctags (ctags -R *)
+" - jsctags npm module (see github page for how to generate tags file)
+" - to be continued...
+"================================
+
+" vim home
+let s:vim_home=expand("~/.config/nvim")
+
+"============================
+" vim-plug installed packages
+"============================
+
+" install vim-plug
+let s:bundle_home=s:vim_home."/bundle"
+let s:plug_tool_home=s:bundle_home."/vim-plug"
+if !isdirectory(s:plug_tool_home."/.git")
+	silent exec "!mkdir -p ".s:bundle_home
+	silent exec "!git clone https://github.com/jwhitley/vim-plug.git ".s:plug_tool_home
+	let s:bootstrap=1
+endif
+exec "set rtp+=".s:plug_tool_home
+call plug#begin(s:bundle_home)
+
+" let vim-plug manage itself
+Plug 'jwhitley/vim-plug'
+
+" statusline & tabline
+Plug 'bling/vim-airline'
+
+" file explorer
+Plug 'scrooloose/nerdtree'
+
+" Ctrl-P finder
+Plug 'ctrlpvim/ctrlp.vim'
+
+" tags generator
+Plug 'majutsushi/tagbar'
+
+" undo tree visualizer
+Plug 'simnalamburt/vim-mundo'
+
+" closing buffers without closing vim windows
+Plug 'qpkorr/vim-bufkill'
+
+" directory browser (for quick navigation)
+Plug 'tpope/vim-vinegar'
+
+" code auto-completion
+" add language supports to the post-update hook as needed
+" Note: for tern, I had to change 'stdin_windows' -> 'stdin' in
+" tern-completer.py for it to work (probably a python version issue).
+" everytime this plugin is updated, go to extras/ & run ./youcompleteme_tern_fix.sh
+Plug 'Valloric/YouCompleteMe', { 'do': 'python3 install.py --clang-completer --tern-completer' }
+
+" generates compiler flags files to be used with YouCompleteMe
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+
+" syntax diagnostic display
+Plug 'scrooloose/syntastic'
+
+" syntax highlighting for pug/jade
+Plug 'digitaltoad/vim-pug'
+
+" auto insert brackets/quotes... in pairs
+Plug 'jiangmiao/auto-pairs'
+
+" easier block commenting
+"Plug 'scrooloose/nerdcommenter'
+
+" multi cursor editor
+Plug 'terryma/vim-multiple-cursors'
+
+" easily editing surroundings (brackets, tags...)
+Plug 'tpope/vim-surround'
+
+" support repeating of plugin key mappings
+Plug 'tpope/vim-repeat'
+
+" alignment helper
+Plug 'junegunn/vim-easy-align'
+
+" highlighting/handling whitespaces
+Plug 'ntpeters/vim-better-whitespace'
+
+" hex editor
+Plug 'fidian/hexmode'
+
+" aids in nodejs development
+Plug 'moll/vim-node'
+
+" REST console
+Plug 'diepm/vim-rest-console'
+
+" additional text highlighting for javascript
+Plug 'jelera/vim-javascript-syntax'
+
+" another highlighting tool for javascript
+Plug 'pangloss/vim-javascript'
+
+" displaying colors from color codes in css files
+Plug 'ap/vim-css-color'
+
+" vim syntax file for i3 config file
+Plug 'PotatoesMaster/i3-vim-syntax'
+
+" plugin of NERDTree to show git status of files
+Plug 'Xuyuanp/nerdtree-git-plugin'
+
+" show git diff in gutter column
+Plug 'airblade/vim-gitgutter'
+
+" snippets engine (text enpansion)
+Plug 'SirVer/ultisnips'
+
+" incremental search
+Plug 'haya14busa/incsearch.vim'
+
+" fuzzy search
+Plug 'haya14busa/incsearch-fuzzy.vim'
+
+" easier moving around in a file
+Plug 'easymotion/vim-easymotion'
+
+" directory search
+Plug 'dyng/ctrlsf.vim'
+
+" colorscheme pack
+Plug 'flazz/vim-colorschemes'
+
+" notice that plugins aren't updated at nvim startup,
+" the code snippet below is only for first-time vim-plug installation.
+" updating can simple be done by calling :PlugInstall/Update from Command Mode
+if exists("s:bootstrap") && s:bootstrap
+	unlet s:bootstrap
+	autocmd VimEnter * PlugInstall
+endif
+call plug#end()
+
+"========================
+" Vim basic configuration
+"========================
+
+" path to init.vim
+let g:viminit=s:vim_home."/init.vim"
+
+" add an extra directory to runtimepath for miscellanous files
+let s:vim_extra_dir=s:vim_home."/extras"
+exec 'set rtp+='.s:vim_extra_dir
+
+" show key pressed in command mode
+set showcmd
+
+" tabbing related stuff
+set tabstop=4
+set shiftwidth=4
+" i don't like this option
+set softtabstop=0
+set noexpandtab
+
+" display tab characters
+set list lcs=tab:┆\ 
+
+" line numbering
+set number
+
+" encoding
+set encoding=utf-8
+set fileencoding=utf-8
+
+" mapleader key
+let mapleader=','
+
+" no backup files
+set nobackup
+set noswapfile
+
+" undo settings
+exec "set undodir=".s:vim_home."/undofiles"
+set undofile
+
+" turn off Vi compatibility
+set nocompatible
+
+" shell settings
+set shell=bash
+
+" always show status line
+set laststatus=2
+
+" for better displaying
+set ttyfast
+set lazyredraw
+
+" turn on syntax highlighting (it's on by default, though)
+syntax on
+
+" colorscheme
+" colorscheme github
+"colorscheme lucius
+"LuciusWhite
+colorscheme molokai
+
+" load ftplugins and indent files
+filetype plugin on
+filetype plugin indent on
+
+" line wrapping
+set wrap
+set linebreak
+set breakindent
+
+" set hidden (for buffer stacking, I'm not sure about this yet)
+set hidden
+
+" always try to resize windows equally after splitting/closing windows
+set equalalways
+
+" python interpreters
+" setting these options directly to be sure
+let g:python_host_prog='/usr/bin/python'
+let g:python3_host_prog='/usr/bin/python3'
+
+" key mapping for C code compilation & execution
+nnoremap <leader>r :!gcc % -o %.out && ./%.out <CR>
+
+" save and load sessions automatically at start/quit
+" sessions are stored on a per-cwd basis
+function! MakeSession()
+	if g:sessionfile != ""
+		echo "Saving..."
+		if (filewritable(g:sessiondir) != 2)
+			execute "silent !mkdir -p ".g:sessiondir
+			redraw!
+		endif
+		exe "mksession! ".g:sessionfile
+	endif
+endfunction
+function! LoadSession()
+	if argc() == 0
+		let g:sessiondir = s:vim_home."/sessions".getcwd()
+		let g:sessionfile = g:sessiondir."/session.vim"
+		if (filereadable(g:sessionfile))
+			execute "source ".g:sessionfile
+		else
+			echo "No session loaded."
+		endif
+	else
+		let g:sessionfile = ""
+		let g:sessiondir = ""
+	endif
+endfunction
+" the 'nested' is because loading session might open some buffers,
+" and we want the events to be emitted
+autocmd VimEnter * nested :call LoadSession()
+autocmd VimLeave * :call MakeSession()
+
+"================================
+" plugins specific configurations
+"================================
+
+" NERDTree
+noremap <silent><F2> :NERDTreeToggle<CR>
+nnoremap <silent><leader><F2> :NERDTreeFind<CR>
+let g:NERDTreeChDirMode=2
+" this list is surely ongoing...
+let g:NERDTreeIgnore=['\~$', '\.o$[[file]]', '\.java$[[file]]', '\.db$[[file]]']
+" for now, use the default sort settings
+" let g:NERDTreeSortOrder=[]
+let g:NERDTreeShowBookmarks=1
+
+" tagbar
+noremap <F8> :TagbarToggle<CR>
+
+" airline
+set noshowmode
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#syntastic#enabled=1
+let g:airline_powerline_fonts=0
+" for fugitive
+" let g:airline#entensions#branch#enabled=1
+" let g:airline#entensions#branch#format='Git_flow_branch_format'
+let g:airline#extensions#tabline#fnamemod=':t'
+
+" ctrlp
+" this won't do anything if we use a custom file listing command
+" let g:ctrlp_custom_ignore={
+" 	\ 'dir': '\v[\/]\.(git|svn)$',
+" 	\ 'file': '\v\.(exe|so|o|class|out)'
+" 	\ }
+" custom file listing commmand, using ag and an ignore file (created by hand)
+let g:ctrlp_user_command='ag %s -l -g "" -p '.s:vim_extra_dir."/agignore"
+
+" mundo
+nnoremap <silent><F5> :MundoToggle<CR>
+let g:mundo_right=1
+let g:mundo_preview_bottom=1
+
+" YouCompleteMe
+let g:ycm_comfirm_extra_conf=0
+" this one is the default setting
+" let g:ycm_add_preview_to_completeopt=0
+" maybe also add 'menuone'?
+set completeopt-=preview
+let g:ycm_server_python_interpreter=g:python3_host_prog
+" the file .ycm_extra_conf.py should be created manually based on
+" YouCompleteMe's own extra_conf file
+" (I myself remove all the compilation flags except for -Wall)
+let g:ycm_global_ycm_extra_conf=s:vim_extra_dir."/ycm_extra_conf.py"
+" as for js, look '.tern-project' up on the Internet
+
+" syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list=1
+let g:syntastic_auto_loc_list=1
+" set to 0 so it wouldn't interfere with YCM when opening C files
+let g:syntastic_check_on_open=0
+let g:syntastic_check_on_wq=0
+" add filetypes that should be checked automatically be syntastic into the
+" active_filetypes array.
+" C-family files are already checked by YouCompleteMe
+noremap <silent><leader>st :SyntasticToggleMode<CR>
+
+" vim-multiple-cursors
+let g:multi_cursor_exit_from_visual_mode=0
+let g:multi_cursor_exit_from_insert_mode=0
+" avoid Ctrl-P key mapping
+let g:multi_cursor_prev_key='<C-b>'
+
+" vim-easy-align
+xnoremap ga <Plug>(EasyAlign)
+nnoremap ga <Plug>(EasyAlign)
+
+" vim-rest-tool
+let g:vrc_cookie_jar='/tmp/vrc_cookie_jar'
+
+" nerdtree-git-plugin
+let g:NERDTreeIndicatorMapCustom={
+	\ "Modified"  : "✹",
+	\ "Staged"    : "✚",
+	\ "Untracked" : "✭",
+	\ "Renamed"   : "➜",
+	\ "Unmerged"  : "═",
+	\ "Deleted"   : "✖",
+	\ "Dirty"     : "✗",
+	\ "Clean"     : "✔︎",
+	\ "Unknown"   : "?"
+	\ }
+
+" vim-gitgutter
+let g:gitgutter_max_signs=400
+
+" ultisnips
+let g:UltiSnipsExpandTrigger='<C-e>'
+let g:UltiSnipsJumpForwardTrigger='<C-l>'
+let g:UltiSnipsJumpBackwardTrigger='<C-h>'
+
+" incsearch.vim
+map / <Plug>(incsearch-forward)
+map ? <Plug>(incsearch-bacward)
+map g/ <Plug>(incsearch-stay)
+set hlsearch
+let g:incsearch#auto_nohlsearch = 1
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
+
+" incsearch-fuzzy.vim
+map z/ <Plug>(incsearch-fuzzy-/)
+map z? <Plug>(incsearch-fuzzy-?)
+map zg/ <Plug>(incsearch-fuzzy-stay)
+" turn on fuzzy search (not using vim's spellchecking feature)
+map zfo :call incsearch#call(incsearch#config#fuzzy#make())<CR>
+
+" vim-easymotion
+let g:EasyMotion_do_mapping=0
+nmap <leader>s <Plug>(easymotion-bd-f)
+nmap <leader>s <Plug>(easymotion-bd-f2)
+nmap <leader>w <Plug>(easymotion-bd-w)
+nmap <leader>j <Plug>(easymotion-j)
+nmap <leader>k <Plug>(easymotion-k)
+let g:EasyMotion_smartcase=1
+
+" ctrlsf.vim
+nmap <leader>/ <Plug>CtrlSFPrompt
+vmap <leader>/ <Plug>CtrlSFWordPath
+nnoremap <silent><leader><F3> :CtrlSFToggle<CR>
+let g:ctrlsf_extra_backend_args={
+	\ 'ag': '-p '.s:vim_extra_dir."/.agignore"
+	\ }
+
+noremap <C-j> <C-w>j
+noremap <C-h> <C-w>h
