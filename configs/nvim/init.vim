@@ -47,12 +47,10 @@ Plug 'scrooloose/nerdtree'
 " Ctrl-P finder
 Plug 'ctrlpvim/ctrlp.vim'
 
-" tags generator
-Plug 'majutsushi/tagbar'
-
 " undo tree visualizer
 Plug 'simnalamburt/vim-mundo'
 
+" TODO: check out alternatives like qbyebye or smt
 " closing buffers without closing vim windows
 Plug 'qpkorr/vim-bufkill'
 
@@ -79,7 +77,7 @@ Plug 'digitaltoad/vim-pug'
 Plug 'jiangmiao/auto-pairs'
 
 " easier block commenting
-"Plug 'scrooloose/nerdcommenter'
+Plug 'scrooloose/nerdcommenter'
 
 " multi cursor editor
 Plug 'terryma/vim-multiple-cursors'
@@ -89,6 +87,9 @@ Plug 'tpope/vim-surround'
 
 " support repeating of plugin key mappings
 Plug 'tpope/vim-repeat'
+
+" tag navigation window
+Plug 'majutsushi/tagbar'
 
 " alignment helper
 Plug 'junegunn/vim-easy-align'
@@ -172,7 +173,7 @@ set softtabstop=0
 set noexpandtab
 
 " display tab characters
-set list lcs=tab:┆\ 
+set list lcs=tab:┆\
 
 " line numbering
 set number
@@ -181,8 +182,12 @@ set number
 set encoding=utf-8
 set fileencoding=utf-8
 
-" mapleader key
+" map leader key
+" also gonna use <leader>x<...> for second level key mapping
 let mapleader=','
+
+" map local leader key
+let maplocalleadder="\\"
 
 " no backup files
 set nobackup
@@ -234,9 +239,6 @@ set equalalways
 let g:python_host_prog='/usr/bin/python'
 let g:python3_host_prog='/usr/bin/python3'
 
-" key mapping for C code compilation & execution
-nnoremap <leader>r :!gcc % -o %.out && ./%.out <CR>
-
 " save and load sessions automatically at start/quit
 " sessions are stored on a per-cwd basis
 function! MakeSession()
@@ -268,11 +270,48 @@ endfunction
 autocmd VimEnter * nested :call LoadSession()
 autocmd VimLeave * :call MakeSession()
 
+"
+" vim basic mappings
+"
+
+" change window (not in visual mode)
+noremap <C-j> <C-w>j
+noremap <C-h> <C-w>h
+noremap <C-k> <C-w>k
+noremap <C-l> <C-w>l
+
+" copy to/paste from clipboard
+vnoremap <leader>y "+y
+nnoremap <leader>yy "+yy
+vnoremap <leader>p "+p
+nnoremap <leader>p "+p
+
+" buffer operations
+" TODO: check if :bd and :BD are different
+nnoremap <silent><tab> :bnext<CR>
+nnoremap <silent><s-tab> :bprevious<CR>
+nnoremap <silent><leader>bd :bd<CR>
+nnoremap <silent><leader>bfd :bd!<CR>
+nnoremap <silent><leader>bn :enew<CR>
+nnoremap <silent><leader>bad :bufdo bd<CR>
+
+" remap C-I and C-O because Tab (C-I) conflicts with buffer operations
+" TODO: see that this works
+nnoremap <leader>i <C-i>
+nnoremap <leader>o <C-o>
+
+" key mapping for C code compilation & execution
+nnoremap <leader>r :!gcc % -o %.out && ./%.out <CR>
+
+" change current directory to the current file's
+nnoremap <leader>. :lcd %:p:h<CR>
+
 "================================
 " plugins specific configurations
 "================================
 
 " NERDTree
+"
 noremap <silent><F2> :NERDTreeToggle<CR>
 nnoremap <silent><leader><F2> :NERDTreeFind<CR>
 let g:NERDTreeChDirMode=2
@@ -283,9 +322,11 @@ let g:NERDTreeIgnore=['\~$', '\.o$[[file]]', '\.java$[[file]]', '\.db$[[file]]']
 let g:NERDTreeShowBookmarks=1
 
 " tagbar
-noremap <F8> :TagbarToggle<CR>
+"
+noremap <silent><F8> :TagbarToggle<CR>
 
 " airline
+"
 set noshowmode
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#syntastic#enabled=1
@@ -296,6 +337,7 @@ let g:airline_powerline_fonts=0
 let g:airline#extensions#tabline#fnamemod=':t'
 
 " ctrlp
+"
 " this won't do anything if we use a custom file listing command
 " let g:ctrlp_custom_ignore={
 " 	\ 'dir': '\v[\/]\.(git|svn)$',
@@ -303,13 +345,18 @@ let g:airline#extensions#tabline#fnamemod=':t'
 " 	\ }
 " custom file listing commmand, using ag and an ignore file (created by hand)
 let g:ctrlp_user_command='ag %s -l -g "" -p '.s:vim_extra_dir."/agignore"
+" TODO: find out more about this
+let g:ctrlp_dont_split='NERD_tree_2'
+nnoremap <leader>xp :CtrlPTag<CR>
 
-" mundo
+" vim-mundo
+"
 nnoremap <silent><F5> :MundoToggle<CR>
 let g:mundo_right=1
 let g:mundo_preview_bottom=1
 
 " YouCompleteMe
+"
 let g:ycm_comfirm_extra_conf=0
 " this one is the default setting
 " let g:ycm_add_preview_to_completeopt=0
@@ -321,8 +368,11 @@ let g:ycm_server_python_interpreter=g:python3_host_prog
 " (I myself remove all the compilation flags except for -Wall)
 let g:ycm_global_ycm_extra_conf=s:vim_extra_dir."/ycm_extra_conf.py"
 " as for js, look '.tern-project' up on the Internet
+" TODO: check tern mapping with local leader
+" tern mappings
 
 " syntastic
+"
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
@@ -331,25 +381,27 @@ let g:syntastic_auto_loc_list=1
 " set to 0 so it wouldn't interfere with YCM when opening C files
 let g:syntastic_check_on_open=0
 let g:syntastic_check_on_wq=0
-" add filetypes that should be checked automatically be syntastic into the
-" active_filetypes array.
 " C-family files are already checked by YouCompleteMe
 noremap <silent><leader>st :SyntasticToggleMode<CR>
 
 " vim-multiple-cursors
+"
 let g:multi_cursor_exit_from_visual_mode=0
 let g:multi_cursor_exit_from_insert_mode=0
 " avoid Ctrl-P key mapping
 let g:multi_cursor_prev_key='<C-b>'
 
 " vim-easy-align
-xnoremap ga <Plug>(EasyAlign)
-nnoremap ga <Plug>(EasyAlign)
+"
+xnoremap <leader>ga <Plug>(EasyAlign)
+nnoremap <leader>ga <Plug>(EasyAlign)
 
 " vim-rest-tool
+"
 let g:vrc_cookie_jar='/tmp/vrc_cookie_jar'
 
 " nerdtree-git-plugin
+"
 let g:NERDTreeIndicatorMapCustom={
 	\ "Modified"  : "✹",
 	\ "Staged"    : "✚",
@@ -363,14 +415,21 @@ let g:NERDTreeIndicatorMapCustom={
 	\ }
 
 " vim-gitgutter
+"
 let g:gitgutter_max_signs=400
 
 " ultisnips
+"
 let g:UltiSnipsExpandTrigger='<C-e>'
 let g:UltiSnipsJumpForwardTrigger='<C-l>'
 let g:UltiSnipsJumpBackwardTrigger='<C-h>'
 
+" better-whitespace
+"
+autocmd BufWritePre * StripWhitespace
+
 " incsearch.vim
+"
 map / <Plug>(incsearch-forward)
 map ? <Plug>(incsearch-bacward)
 map g/ <Plug>(incsearch-stay)
@@ -384,6 +443,7 @@ map g* <Plug>(incsearch-nohl-g*)
 map g# <Plug>(incsearch-nohl-g#)
 
 " incsearch-fuzzy.vim
+"
 map z/ <Plug>(incsearch-fuzzy-/)
 map z? <Plug>(incsearch-fuzzy-?)
 map zg/ <Plug>(incsearch-fuzzy-stay)
@@ -391,6 +451,7 @@ map zg/ <Plug>(incsearch-fuzzy-stay)
 map zfo :call incsearch#call(incsearch#config#fuzzy#make())<CR>
 
 " vim-easymotion
+"
 let g:EasyMotion_do_mapping=0
 nmap <leader>s <Plug>(easymotion-bd-f)
 nmap <leader>s <Plug>(easymotion-bd-f2)
@@ -400,6 +461,7 @@ nmap <leader>k <Plug>(easymotion-k)
 let g:EasyMotion_smartcase=1
 
 " ctrlsf.vim
+"
 nmap <leader>/ <Plug>CtrlSFPrompt
 vmap <leader>/ <Plug>CtrlSFWordPath
 nnoremap <silent><leader><F3> :CtrlSFToggle<CR>
@@ -407,5 +469,3 @@ let g:ctrlsf_extra_backend_args={
 	\ 'ag': '-p '.s:vim_extra_dir."/.agignore"
 	\ }
 
-noremap <C-j> <C-w>j
-noremap <C-h> <C-w>h
