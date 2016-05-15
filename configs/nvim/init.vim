@@ -13,7 +13,7 @@
 " - pug-lint npm module (for pug/jade syntax checking)
 " - jshint npm module (for js syntax checking)
 " - ctags (ctags -R *)
-" - jsctags npm module (see github page for how to generate tags file)
+" - jsctags npm module (see extras dir for how to generate tags file)
 " - to be continued...
 "================================
 
@@ -50,12 +50,8 @@ Plug 'ctrlpvim/ctrlp.vim'
 " undo tree visualizer
 Plug 'simnalamburt/vim-mundo'
 
-" TODO: check out alternatives like qbyebye or smt
 " closing buffers without closing vim windows
-Plug 'qpkorr/vim-bufkill'
-
-" directory browser (for quick navigation)
-Plug 'tpope/vim-vinegar'
+Plug 'moll/vim-bbye'
 
 " code auto-completion
 " add language supports to the post-update hook as needed
@@ -99,9 +95,6 @@ Plug 'ntpeters/vim-better-whitespace'
 
 " hex editor
 Plug 'fidian/hexmode'
-
-" aids in nodejs development
-Plug 'moll/vim-node'
 
 " REST console
 Plug 'diepm/vim-rest-console'
@@ -173,7 +166,8 @@ set softtabstop=0
 set noexpandtab
 
 " display tab characters
-set list lcs=tab:┆\
+set list
+exec "set listchars=tab:┆\\ "
 
 " line numbering
 set number
@@ -187,7 +181,7 @@ set fileencoding=utf-8
 let mapleader=','
 
 " map local leader key
-let maplocalleadder="\\"
+let maplocalleader="\\"
 
 " no backup files
 set nobackup
@@ -215,9 +209,10 @@ syntax on
 
 " colorscheme
 " colorscheme github
-"colorscheme lucius
-"LuciusWhite
-colorscheme molokai
+colorscheme lucius
+LuciusWhite
+"colorscheme molokai
+"colorscheme hybrid_material
 
 " load ftplugins and indent files
 filetype plugin on
@@ -227,6 +222,10 @@ filetype plugin indent on
 set wrap
 set linebreak
 set breakindent
+
+" ignorecase when searching (it's faster this way...)
+" plus ctags might need this for binary searching
+set ignorecase
 
 " set hidden (for buffer stacking, I'm not sure about this yet)
 set hidden
@@ -287,24 +286,22 @@ vnoremap <leader>p "+p
 nnoremap <leader>p "+p
 
 " buffer operations
-" TODO: check if :bd and :BD are different
 nnoremap <silent><tab> :bnext<CR>
 nnoremap <silent><s-tab> :bprevious<CR>
-nnoremap <silent><leader>bd :bd<CR>
-nnoremap <silent><leader>bfd :bd!<CR>
+nnoremap <silent><leader>bd :Bdelete<CR>
+nnoremap <silent><leader>bfd :Bdelete!<CR>
 nnoremap <silent><leader>bn :enew<CR>
-nnoremap <silent><leader>bad :bufdo bd<CR>
+nnoremap <silent><leader>bad :bufdo Bdelete<CR>
 
 " remap C-I and C-O because Tab (C-I) conflicts with buffer operations
-" TODO: see that this works
 nnoremap <leader>i <C-i>
 nnoremap <leader>o <C-o>
 
 " key mapping for C code compilation & execution
-nnoremap <leader>r :!gcc % -o %.out && ./%.out <CR>
+nnoremap <leader>xr :!gcc % -o %.out && ./%.out <CR>
 
 " change current directory to the current file's
-nnoremap <leader>. :lcd %:p:h<CR>
+nnoremap <leader>x. :lcd %:p:h<CR>
 
 "================================
 " plugins specific configurations
@@ -345,8 +342,7 @@ let g:airline#extensions#tabline#fnamemod=':t'
 " 	\ }
 " custom file listing commmand, using ag and an ignore file (created by hand)
 let g:ctrlp_user_command='ag %s -l -g "" -p '.s:vim_extra_dir."/agignore"
-" TODO: find out more about this
-let g:ctrlp_dont_split='NERD_tree_2'
+let g:ctrlp_working_path_mode='raw'
 nnoremap <leader>xp :CtrlPTag<CR>
 
 " vim-mundo
@@ -382,7 +378,7 @@ let g:syntastic_auto_loc_list=1
 let g:syntastic_check_on_open=0
 let g:syntastic_check_on_wq=0
 " C-family files are already checked by YouCompleteMe
-noremap <silent><leader>st :SyntasticToggleMode<CR>
+noremap <silent><leader>xst :SyntasticToggleMode<CR>
 
 " vim-multiple-cursors
 "
@@ -393,8 +389,8 @@ let g:multi_cursor_prev_key='<C-b>'
 
 " vim-easy-align
 "
-xnoremap <leader>ga <Plug>(EasyAlign)
-nnoremap <leader>ga <Plug>(EasyAlign)
+xmap <leader>ga <Plug>(EasyAlign)
+nmap <leader>ga <Plug>(EasyAlign)
 
 " vim-rest-tool
 "
@@ -424,7 +420,7 @@ let g:UltiSnipsExpandTrigger='<C-e>'
 let g:UltiSnipsJumpForwardTrigger='<C-l>'
 let g:UltiSnipsJumpBackwardTrigger='<C-h>'
 
-" better-whitespace
+" vim-better-whitespace
 "
 autocmd BufWritePre * StripWhitespace
 
@@ -447,8 +443,6 @@ map g# <Plug>(incsearch-nohl-g#)
 map z/ <Plug>(incsearch-fuzzy-/)
 map z? <Plug>(incsearch-fuzzy-?)
 map zg/ <Plug>(incsearch-fuzzy-stay)
-" turn on fuzzy search (not using vim's spellchecking feature)
-map zfo :call incsearch#call(incsearch#config#fuzzy#make())<CR>
 
 " vim-easymotion
 "
@@ -463,9 +457,13 @@ let g:EasyMotion_smartcase=1
 " ctrlsf.vim
 "
 nmap <leader>/ <Plug>CtrlSFPrompt
-vmap <leader>/ <Plug>CtrlSFWordPath
-nnoremap <silent><leader><F3> :CtrlSFToggle<CR>
+vmap <leader>/ <Plug>CtrlSFVwordPath
+nnoremap <silent><F3> :CtrlSFToggle<CR>
 let g:ctrlsf_extra_backend_args={
-	\ 'ag': '-p '.s:vim_extra_dir."/.agignore"
+	\ 'ag': '-p '.s:vim_extra_dir."/agignore"
 	\ }
+" TODO: find a way to quickly search current file (with no context lines)
 
+" auto-pairs
+"
+let g:AutoPairsShortcutToggle='<leader>a'
