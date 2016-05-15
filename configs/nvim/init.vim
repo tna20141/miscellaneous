@@ -363,9 +363,6 @@ let g:ycm_server_python_interpreter=g:python3_host_prog
 " YouCompleteMe's own extra_conf file
 " (I myself remove all the compilation flags except for -Wall)
 let g:ycm_global_ycm_extra_conf=s:vim_extra_dir."/ycm_extra_conf.py"
-" as for js, look '.tern-project' up on the Internet
-" TODO: check tern mapping with local leader
-" tern mappings
 
 " syntastic
 "
@@ -462,7 +459,9 @@ nnoremap <silent><F3> :CtrlSFToggle<CR>
 let g:ctrlsf_extra_backend_args={
 	\ 'ag': '-p '.s:vim_extra_dir."/agignore"
 	\ }
-" TODO: find a way to quickly search current file (with no context lines)
+" convenient mapping for finding current file without context lines
+" add PATTERN and PATH (%) after this
+nmap <leader>xw :CtrlSF -C 0<Space>
 
 " auto-pairs
 "

@@ -3,3 +3,11 @@ Generating js tags file using jsctags:
 ================
 
 $ find . -type f -iregex ".*\.js$" -not -path "./node_modules/*" -exec jsctags {} -f \; | sed '/^$/d' | sort > tags
+
+================
+tern for vim
+================
+
+Copy the file tern-project to $NEW_PROJECT/.tern-project
+It includes support for nodejs.
+Also YouCompleteMe's tern_for_vim doesn't include stuff like TernDef.
