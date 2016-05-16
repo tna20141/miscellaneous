@@ -78,6 +78,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 
 " multi cursor editor
+" this conflicts with YouCompleteMe, might find a replacement
 "Plug 'terryma/vim-multiple-cursors'
 
 " easily editing surroundings (brackets, tags...)
@@ -322,6 +323,8 @@ let g:NERDTreeIgnore=['\~$', '\.o$[[file]]', '\.java$[[file]]', '\.db$[[file]]']
 " for now, use the default sort settings
 " let g:NERDTreeSortOrder=[]
 let g:NERDTreeShowBookmarks=1
+" auto close NERDTree before quitting vim (for window rendering reasons)
+autocmd VimLeavePre * :NERDTreeClose
 
 " tagbar
 "
@@ -368,9 +371,7 @@ let g:ycm_server_python_interpreter=g:python3_host_prog
 " YouCompleteMe's own extra_conf file
 " (I myself remove all the compilation flags except for -Wall)
 let g:ycm_global_ycm_extra_conf=s:vim_extra_dir."/ycm_extra_conf.py"
-" TODO: somehow tern's node support is not loaded sometimes,
-" I have to start up a small .js file to trigger it to work on
-" a big project. Have to find out about this
+" TODO: checkout YouCompleteMe's GoTo features
 
 " syntastic
 "
