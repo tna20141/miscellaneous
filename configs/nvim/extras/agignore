@@ -3,3 +3,9 @@
 *.so
 *.class
 *.exe
+*.log
+*.gz
+*.zip
+*.xz
+*.dat
+tags

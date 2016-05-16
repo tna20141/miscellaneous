@@ -17,6 +17,9 @@
 " - to be continued...
 "================================
 
+" turn off Vi compatibility (this should be put at the beginning)
+set nocompatible
+
 " vim home
 let s:vim_home=expand("~/.config/nvim")
 
@@ -76,7 +79,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 
 " multi cursor editor
-Plug 'terryma/vim-multiple-cursors'
+"Plug 'terryma/vim-multiple-cursors'
 
 " easily editing surroundings (brackets, tags...)
 Plug 'tpope/vim-surround'
@@ -191,8 +194,9 @@ set noswapfile
 exec "set undodir=".s:vim_home."/undofiles"
 set undofile
 
-" turn off Vi compatibility
-set nocompatible
+" highlight current line
+" this could slow vim down, disable it if it does
+set cursorline
 
 " shell settings
 set shell=bash
@@ -203,6 +207,8 @@ set laststatus=2
 " for better displaying
 set ttyfast
 set lazyredraw
+
+" TODO: checkout code folding feature
 
 " turn on syntax highlighting (it's on by default, though)
 syntax on
@@ -227,7 +233,7 @@ set breakindent
 " plus ctags might need this for binary searching
 set ignorecase
 
-" set hidden (for buffer stacking, I'm not sure about this yet)
+" hide buffers instead of closing them completely
 set hidden
 
 " always try to resize windows equally after splitting/closing windows
@@ -363,6 +369,9 @@ let g:ycm_server_python_interpreter=g:python3_host_prog
 " YouCompleteMe's own extra_conf file
 " (I myself remove all the compilation flags except for -Wall)
 let g:ycm_global_ycm_extra_conf=s:vim_extra_dir."/ycm_extra_conf.py"
+" TODO: somehow tern's node support is not loaded sometimes,
+" I have to start up a small .js file to trigger it to work on
+" a big project. Have to find out about this
 
 " syntastic
 "
@@ -376,6 +385,9 @@ let g:syntastic_check_on_open=0
 let g:syntastic_check_on_wq=0
 " C-family files are already checked by YouCompleteMe
 noremap <silent><leader>xst :SyntasticToggleMode<CR>
+" syntastic seems slow, so switch it to passive mode at start
+" and switch it on manually when needed
+autocmd VimEnter * :SyntasticToggleMode
 
 " vim-multiple-cursors
 "
