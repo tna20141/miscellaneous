@@ -8,7 +8,6 @@
 " - nodejs & npm
 " - xclip
 " - ag
-" - clang (?)
 " - tidy (for html syntax checking)
 " - pug-lint npm module (for pug/jade syntax checking)
 " - jshint npm module (for js syntax checking)

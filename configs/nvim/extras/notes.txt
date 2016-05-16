@@ -8,6 +8,8 @@ $ find . -type f -iregex ".*\.js$" -not -path "./node_modules/*" -exec jsctags {
 tern for vim
 ================
 
+Because of python version issues with YouCompleteMe, run ./youcompleteme_tern_fix.sh after installing.
+
 Copy the file tern-project to $NEW_PROJECT/.tern-project
 It includes support for nodejs.
 Also YouCompleteMe's tern_for_vim doesn't include stuff like TernDef.
