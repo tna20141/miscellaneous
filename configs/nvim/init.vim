@@ -75,11 +75,7 @@ Plug 'digitaltoad/vim-pug'
 Plug 'jiangmiao/auto-pairs'
 
 " easier block commenting
-Plug 'scrooloose/nerdcommenter'
-
-" multi cursor editor
-" this conflicts with YouCompleteMe, might find a replacement
-"Plug 'terryma/vim-multiple-cursors'
+Plug 'tomtom/tcomment_vim'
 
 " easily editing surroundings (brackets, tags...)
 Plug 'tpope/vim-surround'
@@ -207,8 +203,6 @@ set laststatus=2
 " for better displaying
 set ttyfast
 set lazyredraw
-
-" TODO: checkout code folding feature
 
 " turn on syntax highlighting (it's on by default, though)
 syntax on
@@ -371,7 +365,8 @@ let g:ycm_server_python_interpreter=g:python3_host_prog
 " YouCompleteMe's own extra_conf file
 " (I myself remove all the compilation flags except for -Wall)
 let g:ycm_global_ycm_extra_conf=s:vim_extra_dir."/ycm_extra_conf.py"
-" TODO: checkout YouCompleteMe's GoTo features
+nmap <leader>gf :YcmCompleter GoToDefinition<CR>
+nmap <leader>gd :YcmCompleter GoToDeclaration<CR>
 
 " syntastic
 "
@@ -388,13 +383,6 @@ noremap <silent><leader>xst :SyntasticToggleMode<CR>
 " syntastic seems slow, so switch it to passive mode at start
 " and switch it on manually when needed
 autocmd VimEnter * :SyntasticToggleMode
-
-" vim-multiple-cursors
-"
-let g:multi_cursor_exit_from_visual_mode=0
-let g:multi_cursor_exit_from_insert_mode=0
-" avoid Ctrl-P key mapping
-let g:multi_cursor_prev_key='<C-b>'
 
 " vim-easy-align
 "
@@ -473,7 +461,7 @@ let g:ctrlsf_extra_backend_args={
 	\ }
 " convenient mapping for finding current file without context lines
 " add PATTERN and PATH (%) after this
-nmap <leader>xw :CtrlSF -C 0<Space>
+nmap <leader>x/ :CtrlSF -C 0<Space>
 
 " auto-pairs
 "
