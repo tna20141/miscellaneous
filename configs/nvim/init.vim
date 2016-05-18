@@ -238,9 +238,23 @@ set equalalways
 let g:python_host_prog='/usr/bin/python'
 let g:python3_host_prog='/usr/bin/python3'
 
+" an ugly hack to check cmdline args to see whether to use sessions
+" change the variable below for the prefered commandline option
+" for now, we don't use the swap file option anyway, so take the
+" '-n' option as 'no session' feature
+let s:no_session_cmdline_option="-n"
+let g:no_session=0
+let s:get_args_cmd="ps -o command= -p ".getpid()
+if (index(split(system(s:get_args_cmd)), s:no_session_cmdline_option) >= 0)
+	let g:no_session=1
+endif
+
 " save and load sessions automatically at start/quit
 " sessions are stored on a per-cwd basis
 function! MakeSession()
+	if g:no_session == 1
+		return
+	endif
 	if g:sessionfile != ""
 		echo "Saving..."
 		if (filewritable(g:sessiondir) != 2)
@@ -251,6 +265,9 @@ function! MakeSession()
 	endif
 endfunction
 function! LoadSession()
+	if g:no_session == 1
+		return
+	endif
 	if argc() == 0
 		let g:sessiondir = s:vim_home."/sessions".getcwd()
 		let g:sessionfile = g:sessiondir."/session.vim"
