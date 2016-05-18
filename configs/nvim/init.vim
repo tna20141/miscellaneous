@@ -176,7 +176,7 @@ set encoding=utf-8
 set fileencoding=utf-8
 
 " map leader key
-" also gonna use <leader>x<...> for second level key mapping
+" also gonna use <leader><leader><...> for second level key mapping
 let mapleader=','
 
 " map local leader key
@@ -315,10 +315,10 @@ nnoremap <leader>i <C-i>
 nnoremap <leader>o <C-o>
 
 " key mapping for C code compilation & execution
-nnoremap <leader>xr :!gcc % -o %.out && ./%.out <CR>
+nnoremap <leader><leader>r :!gcc % -o %.out && ./%.out <CR>
 
 " change current directory to the current file's
-nnoremap <leader>x. :lcd %:p:h<CR>
+nnoremap <leader><leader>. :lcd %:p:h<CR>
 
 "================================
 " plugins specific configurations
@@ -362,7 +362,7 @@ let g:airline#extensions#tabline#fnamemod=':t'
 " custom file listing commmand, using ag and an ignore file (created by hand)
 let g:ctrlp_user_command='ag %s -l -g "" -p '.s:vim_extra_dir."/agignore"
 let g:ctrlp_working_path_mode='raw'
-nnoremap <leader>xp :CtrlPTag<CR>
+nnoremap <leader><leader>p :CtrlPTag<CR>
 
 " vim-mundo
 "
@@ -396,7 +396,7 @@ let g:syntastic_auto_loc_list=1
 let g:syntastic_check_on_open=0
 let g:syntastic_check_on_wq=0
 " C-family files are already checked by YouCompleteMe
-noremap <silent><leader>xst :SyntasticToggleMode<CR>
+noremap <silent><leader><leader>st :SyntasticToggleMode<CR>
 " syntastic seems slow, so switch it to passive mode at start
 " and switch it on manually when needed
 autocmd VimEnter * :SyntasticToggleMode
@@ -478,7 +478,7 @@ let g:ctrlsf_extra_backend_args={
 	\ }
 " convenient mapping for finding current file without context lines
 " add PATTERN and PATH (%) after this
-nmap <leader>x/ :CtrlSF -C 0<Space>
+nmap <leader><leader>/ :CtrlSF -C 0<Space>
 
 " auto-pairs
 "
