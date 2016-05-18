@@ -3,4 +3,6 @@
 set tabnumbers
 source! /home/tna/.vimperatorrc.local
 
+nmap <BS> :back<CR>
+
 " vim: set ft=vimperator:
