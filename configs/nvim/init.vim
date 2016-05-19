@@ -113,6 +113,9 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 " show git diff in gutter column
 Plug 'airblade/vim-gitgutter'
 
+" git wrapper in vim
+Plug 'tpope/vim-fugitive'
+
 " snippets engine (text enpansion)
 Plug 'SirVer/ultisnips'
 
@@ -130,6 +133,9 @@ Plug 'dyng/ctrlsf.vim'
 
 " colorscheme pack
 Plug 'flazz/vim-colorschemes'
+
+" display search count && current match number
+Plug 'henrik/vim-indexed-search'
 
 " notice that plugins aren't updated at nvim startup,
 " the code snippet below is only for first-time vim-plug installation.
