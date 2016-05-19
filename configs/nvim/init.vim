@@ -195,7 +195,7 @@ set undofile
 
 " highlight current line
 " this could slow vim down, disable it if it does
-set cursorline
+" set cursorline
 
 " shell settings
 set shell=bash
@@ -460,7 +460,7 @@ autocmd BufWritePre * StripWhitespace
 " incsearch.vim
 "
 map / <Plug>(incsearch-forward)
-map ? <Plug>(incsearch-bacward)
+map ? <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 set hlsearch
 let g:incsearch#auto_nohlsearch = 1
@@ -482,7 +482,8 @@ map zg/ <Plug>(incsearch-fuzzy-stay)
 let g:EasyMotion_do_mapping=0
 nmap <leader>s <Plug>(easymotion-bd-f)
 nmap <leader>s <Plug>(easymotion-bd-f2)
-nmap <leader>w <Plug>(easymotion-bd-w)
+" change the map from w to f to mimic vimperator
+nmap <leader>f <Plug>(easymotion-bd-w)
 nmap <leader>j <Plug>(easymotion-j)
 nmap <leader>k <Plug>(easymotion-k)
 let g:EasyMotion_smartcase=1
@@ -502,3 +503,10 @@ nmap <leader><leader>/ :CtrlSF -C 0<Space>
 " auto-pairs
 "
 let g:AutoPairsShortcutToggle='<leader>a'
+
+" vim-indexed-search
+"
+let g:indexed_search_mappings=0
+let g:indexed_search_shortmess=1
+let g:index_search_numbered_only=1
+nmap <silent><leader>n :ShowSearchIndex<CR>
