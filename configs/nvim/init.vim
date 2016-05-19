@@ -101,9 +101,6 @@ Plug 'diepm/vim-rest-console'
 " additional text highlighting for javascript
 Plug 'jelera/vim-javascript-syntax'
 
-" another highlighting tool for javascript
-Plug 'pangloss/vim-javascript'
-
 " displaying colors from color codes in css files
 Plug 'ap/vim-css-color'
 
@@ -238,23 +235,9 @@ set equalalways
 let g:python_host_prog='/usr/bin/python'
 let g:python3_host_prog='/usr/bin/python3'
 
-" an ugly hack to check cmdline args to see whether to use sessions
-" change the variable below for the prefered commandline option
-" for now, we don't use the swap file option anyway, so take the
-" '-n' option as 'no session' feature
-let s:no_session_cmdline_option="-n"
-let g:no_session=0
-let s:get_args_cmd="ps -o command= -p ".getpid()
-if (index(split(system(s:get_args_cmd)), s:no_session_cmdline_option) >= 0)
-	let g:no_session=1
-endif
-
 " save and load sessions automatically at start/quit
 " sessions are stored on a per-cwd basis
 function! MakeSession()
-	if g:no_session == 1
-		return
-	endif
 	if g:sessionfile != ""
 		echo "Saving..."
 		if (filewritable(g:sessiondir) != 2)
@@ -265,9 +248,6 @@ function! MakeSession()
 	endif
 endfunction
 function! LoadSession()
-	if g:no_session == 1
-		return
-	endif
 	if argc() == 0
 		let g:sessiondir = s:vim_home."/sessions".getcwd()
 		let g:sessionfile = g:sessiondir."/session.vim"
@@ -340,6 +320,8 @@ autocmd VimLeavePre * :NERDTreeClose
 " tagbar
 "
 noremap <silent><F8> :TagbarToggle<CR>
+let g:tagbar_autofocus=1
+let g:tagbar_foldlevel=0
 
 " airline
 "
@@ -363,6 +345,37 @@ let g:airline#extensions#tabline#fnamemod=':t'
 let g:ctrlp_user_command='ag %s -l -g "" -p '.s:vim_extra_dir."/agignore"
 let g:ctrlp_working_path_mode='raw'
 nnoremap <leader><leader>p :CtrlPTag<CR>
+let g:ctrlp_match_window='results:100'
+let g:ctrlp_open_multiple_files='i'
+" custom features to delete buffers from ctrlp
+let g:ctrlp_buffer_func = { 'enter': 'CtrlPBufferMappings' }
+function! CtrlPBufferMappings()
+	nnoremap <buffer> <silent> <c-q> :call <sid>CtrlPDeleteBuffer()<cr>
+endfunction
+function! s:CtrlPCloseBuffer(bufline)
+	let bufnum = matchlist(a:bufline, '>\s\+\([0-9]\+\)')[1]
+	exec "bd" bufnum
+	return bufnum
+endfunction
+function! s:CtrlPDeleteBuffer()
+	let marked = ctrlp#getmarkedlist()
+	if empty(marked)
+		let linenum = line('.')
+		call s:CtrlPCloseBuffer(getline('.'))
+		exec "norm \<F5>"
+		let linebottom = line('$')
+		if linenum < linebottom
+			exec linenum
+		endif
+	else
+		for fname in marked
+			let bufid = fname =~ '\[\d\+\*No Name\]$' ? str2nr(matchstr(fname, '\d\+')) : fnamemodify(fname[2:], ':p')
+			exec "silent! bdelete" bufid
+		endfor
+		exec "norm \<F5>"
+		call ctrlp#clearmarkedlist()
+	endif
+endfunction
 
 " vim-mundo
 "
