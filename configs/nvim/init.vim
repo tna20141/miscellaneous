@@ -505,6 +505,7 @@ nmap <leader><leader>/ :CtrlSF -C 0<Space>
 
 " auto-pairs
 "
+let g:AutoPairsCenterLine=0
 let g:AutoPairsShortcutToggle='<leader>a'
 
 " vim-indexed-search
