@@ -87,7 +87,7 @@ Plug 'tpope/vim-repeat'
 Plug 'majutsushi/tagbar'
 
 " alignment helper
-Plug 'junegunn/vim-easy-align'
+"Plug 'junegunn/vim-easy-align'
 
 " highlighting/handling whitespaces
 Plug 'ntpeters/vim-better-whitespace'
@@ -108,7 +108,7 @@ Plug 'ap/vim-css-color'
 Plug 'PotatoesMaster/i3-vim-syntax'
 
 " plugin of NERDTree to show git status of files
-Plug 'Xuyuanp/nerdtree-git-plugin'
+"Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " show git diff in gutter column
 Plug 'airblade/vim-gitgutter'
@@ -136,6 +136,9 @@ Plug 'flazz/vim-colorschemes'
 
 " display search count && current match number
 Plug 'henrik/vim-indexed-search'
+
+" multiple editing
+Plug 'terryma/vim-multiple-cursors'
 
 " notice that plugins aren't updated at nvim startup,
 " the code snippet below is only for first-time vim-plug installation.
