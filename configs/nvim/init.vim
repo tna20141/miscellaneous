@@ -75,9 +75,11 @@ Plug 'digitaltoad/vim-pug'
 Plug 'jiangmiao/auto-pairs'
 
 " easier block commenting
+" notable mapping keys: g
 Plug 'tomtom/tcomment_vim'
 
 " easily editing surroundings (brackets, tags...)
+" notable mapping keys: <action key>s
 Plug 'tpope/vim-surround'
 
 " support repeating of plugin key mappings
@@ -96,6 +98,7 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'fidian/hexmode'
 
 " REST console
+" notable mapping keys: <C-j>
 Plug 'diepm/vim-rest-console'
 
 " additional text highlighting for javascript
@@ -138,6 +141,7 @@ Plug 'flazz/vim-colorschemes'
 Plug 'henrik/vim-indexed-search'
 
 " multiple editing
+" notable mapping keys: <C-n>
 Plug 'terryma/vim-multiple-cursors'
 
 " notice that plugins aren't updated at nvim startup,
@@ -485,8 +489,8 @@ map zg/ <Plug>(incsearch-fuzzy-stay)
 let g:EasyMotion_do_mapping=0
 nmap <leader>s <Plug>(easymotion-bd-f)
 nmap <leader>s <Plug>(easymotion-bd-f2)
-" change the map from w to f to mimic vimperator
-nmap <leader>f <Plug>(easymotion-bd-w)
+" change the mapping to f to mimic vimperator
+nmap f <Plug>(easymotion-bd-w)
 nmap <leader>j <Plug>(easymotion-j)
 nmap <leader>k <Plug>(easymotion-k)
 let g:EasyMotion_smartcase=1
