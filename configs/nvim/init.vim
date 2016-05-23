@@ -202,7 +202,7 @@ set undofile
 
 " highlight current line
 " this could slow vim down, disable it if it does
-" set cursorline
+ set cursorline
 
 " shell settings
 set shell=bash
@@ -219,9 +219,9 @@ syntax on
 
 " colorscheme
 " colorscheme github
-colorscheme lucius
-LuciusWhite
-"colorscheme molokai
+"colorscheme lucius
+"LuciusWhite
+colorscheme molokai
 "colorscheme hybrid_material
 
 " load ftplugins and indent files
