@@ -13,7 +13,10 @@
 " - jshint npm module (for js syntax checking)
 " - ctags (ctags -R *)
 " - jsctags npm module (see extras dir for how to generate tags file)
+" - tern npm module
 " - to be continued...
+
+" For first time setup, run :PlugInstall and restart nvim
 "================================
 
 " turn off Vi compatibility (this should be put at the beginning)
@@ -28,17 +31,17 @@ let s:vim_home=expand("~/.config/nvim")
 
 " install vim-plug
 let s:bundle_home=s:vim_home."/bundle"
-let s:plug_tool_home=s:bundle_home."/vim-plug"
-if !isdirectory(s:plug_tool_home."/.git")
-	silent exec "!mkdir -p ".s:bundle_home
-	silent exec "!git clone https://github.com/jwhitley/vim-plug.git ".s:plug_tool_home
+let s:autoload_dir=s:vim_home."/autoload"
+if !filereadable(s:autoload_dir."/plug.vim")
 	let s:bootstrap=1
+	silent exec "!mkdir -p ".s:autoload_dir
+	silent exec "!mkdir -p ".s:bundle_home
+	silent exec "!git clone https://github.com/junegunn/vim-plug.git ".s:autoload_dir
 endif
-exec "set rtp+=".s:plug_tool_home
 call plug#begin(s:bundle_home)
 
 " let vim-plug manage itself
-Plug 'jwhitley/vim-plug'
+Plug 'junegunn/vim-plug'
 
 " statusline & tabline
 Plug 'bling/vim-airline'
@@ -60,7 +63,20 @@ Plug 'moll/vim-bbye'
 " Note: for tern, I had to change 'stdin_windows' -> 'stdin' in
 " tern-completer.py for it to work (probably a python version issue).
 " everytime this plugin is updated, go to extras/ & run ./youcompleteme_tern_fix.sh
-Plug 'Valloric/YouCompleteMe', { 'do': 'python3 install.py --clang-completer --tern-completer' }
+"Plug 'Valloric/YouCompleteMe', { 'do': 'python3 install.py --clang-completer --tern-completer' }
+
+" code auto-completion for neovim (asynchonously)
+function! DoRemote(arg)
+	UpdateRemotePlugins
+endfunction
+Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+
+" js autocomplete plugin for deoplete, using tern server
+" for now, requires a manual hack to keep the server running persistently
+Plug 'carlitux/deoplete-ternjs', { 'do': '../../extras/deoplete-ternjs_fix.sh' }
+
+" js auto-complete engine
+"Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 
 " generates compiler flags files to be used with YouCompleteMe
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
@@ -144,13 +160,6 @@ Plug 'henrik/vim-indexed-search'
 " notable mapping keys: <C-n>
 Plug 'terryma/vim-multiple-cursors'
 
-" notice that plugins aren't updated at nvim startup,
-" the code snippet below is only for first-time vim-plug installation.
-" updating can simple be done by calling :PlugInstall/Update from Command Mode
-if exists("s:bootstrap") && s:bootstrap
-	unlet s:bootstrap
-	autocmd VimEnter * PlugInstall
-endif
 call plug#end()
 
 "========================
@@ -222,7 +231,6 @@ syntax on
 "colorscheme lucius
 "LuciusWhite
 colorscheme molokai
-"colorscheme hybrid_material
 
 " load ftplugins and indent files
 filetype plugin on
@@ -242,6 +250,10 @@ set hidden
 
 " always try to resize windows equally after splitting/closing windows
 set equalalways
+
+" maybe also add 'menuone'?
+" no preview window when auto-completing
+set completeopt-=preview
 
 " python interpreters
 " setting these options directly to be sure
@@ -398,18 +410,16 @@ let g:mundo_preview_bottom=1
 
 " YouCompleteMe
 "
-let g:ycm_comfirm_extra_conf=0
+" let g:ycm_comfirm_extra_conf=0
 " this one is the default setting
 " let g:ycm_add_preview_to_completeopt=0
-" maybe also add 'menuone'?
-set completeopt-=preview
-let g:ycm_server_python_interpreter=g:python3_host_prog
+" let g:ycm_server_python_interpreter=g:python3_host_prog
 " the file .ycm_extra_conf.py should be created manually based on
 " YouCompleteMe's own extra_conf file
 " (I myself remove all the compilation flags except for -Wall)
-let g:ycm_global_ycm_extra_conf=s:vim_extra_dir."/ycm_extra_conf.py"
-nmap <leader>gf :YcmCompleter GoToDefinition<CR>
-nmap <leader>gd :YcmCompleter GoToDeclaration<CR>
+" let g:ycm_global_ycm_extra_conf=s:vim_extra_dir."/ycm_extra_conf.py"
+" nmap <leader>gf :YcmCompleter GoToDefinition<CR>
+" nmap <leader>gd :YcmCompleter GoToDeclaration<CR>
 
 " syntastic
 "
@@ -510,11 +520,21 @@ nmap <leader><leader>/ :CtrlSF -C 0<Space>
 " auto-pairs
 "
 let g:AutoPairsCenterLine=0
-let g:AutoPairsShortcutToggle='<leader>a'
+let g:AutoPairsShortcutToggle='<leader><F3>'
 
 " vim-indexed-search
 "
 let g:indexed_search_mappings=0
 let g:indexed_search_shortmess=1
 let g:index_search_numbered_only=1
-nmap <silent><leader>n :ShowSearchIndex<CR>
+
+" deoplete
+"
+let g:deoplete#enable_at_startup=1
+inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" deoplete-ternjs
+"
+let g:tern_request_timeout=1
+let g:tern_show_signature_in_pum=0
