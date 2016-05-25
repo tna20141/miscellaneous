@@ -14,6 +14,7 @@
 " - ctags (ctags -R *)
 " - jsctags npm module (see extras dir for how to generate tags file)
 " - tern npm module
+" - clang (and libclang)
 " - to be continued...
 
 " For first time setup, run :PlugInstall and restart nvim
@@ -74,6 +75,9 @@ Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 " js autocomplete plugin for deoplete, using tern server
 " for now, requires a manual hack to keep the server running persistently
 Plug 'carlitux/deoplete-ternjs', { 'do': '../../extras/deoplete-ternjs_fix.sh' }
+
+" C family language autocompleter
+Plug 'zchee/deoplete-clang'
 
 " js auto-complete engine
 "Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
@@ -319,9 +323,6 @@ nnoremap <silent><leader>bad :bufdo Bdelete<CR>
 nnoremap <leader>i <C-i>
 nnoremap <leader>o <C-o>
 
-" key mapping for C code compilation & execution
-nnoremap <leader><leader>r :!gcc % -o %.out && ./%.out <CR>
-
 " change current directory to the current file's
 nnoremap <leader><leader>. :lcd %:p:h<CR>
 
@@ -533,8 +534,15 @@ let g:index_search_numbered_only=1
 let g:deoplete#enable_at_startup=1
 inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+let g:deoplete#file#enable_buffer_path=1
 
 " deoplete-ternjs
 "
 let g:tern_request_timeout=1
 let g:tern_show_signature_in_pum=0
+
+" deoplete-clang
+"
+" these 2 options need to be changed depending on when clang is installed
+let g:deoplete#sources#clang#libclang_path='/usr/lib/llvm-3.8/lib/libclang-3.8.0.so'
+let g:deoplete#sources#clang#clang_header='/usr/lib/llvm-3.8/include'

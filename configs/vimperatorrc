@@ -3,6 +3,14 @@
 " show number next to tabs
 set tabnumbers
 
+" open all firefox pages in new tab
+set newtab=all
+
+" full screen stuff
+set! browser.fullscreen.animate=false
+set! browser.fullscreen.autohide=true
+set! browser.fullscreen.animateUp=0
+
 " Make bar yellow when focused.
 " From: http://www.reddit.com/r/linux/comments/99d55/i_could_use_a_little_vimperator_help_also/
 javascript <<EOF
