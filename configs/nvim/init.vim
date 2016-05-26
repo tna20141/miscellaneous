@@ -73,8 +73,7 @@ endfunction
 Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 
 " js autocomplete plugin for deoplete, using tern server
-" for now, requires a manual hack to keep the server running persistently
-Plug 'carlitux/deoplete-ternjs', { 'do': '../../extras/deoplete-ternjs_fix.sh' }
+Plug 'carlitux/deoplete-ternjs'
 
 " C family language autocompleter
 Plug 'zchee/deoplete-clang'
