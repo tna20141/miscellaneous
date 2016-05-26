@@ -41,9 +41,6 @@ if !filereadable(s:autoload_dir."/plug.vim")
 endif
 call plug#begin(s:bundle_home)
 
-" let vim-plug manage itself
-Plug 'junegunn/vim-plug'
-
 " statusline & tabline
 Plug 'bling/vim-airline'
 
@@ -534,13 +531,6 @@ let g:deoplete#enable_at_startup=1
 inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 let g:deoplete#file#enable_buffer_path=1
-" avoid conflict with vim-multiple-cursors
-function g:Multiple_cursors_before()
-	let g:deoplete#disable_auto_complete=1
-endfunction
-function g:Multiple_cursors_after()
-	let g:deoplete#disable_auto_complete=0
-endfunction
 
 " deoplete-ternjs
 "
@@ -552,3 +542,13 @@ let g:tern_show_signature_in_pum=0
 " these 2 options need to be changed depending on when clang is installed
 let g:deoplete#sources#clang#libclang_path='/usr/lib/llvm-3.8/lib/libclang-3.8.0.so'
 let g:deoplete#sources#clang#clang_header='/usr/lib/llvm-3.8/include'
+
+" vim-multiple-cursors
+"
+" avoid conflict with vim-multiple-cursors
+function g:Multiple_cursors_before()
+	let g:deoplete#disable_auto_complete=1
+endfunction
+function g:Multiple_cursors_after()
+	let g:deoplete#disable_auto_complete=0
+endfunction
