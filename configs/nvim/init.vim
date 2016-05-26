@@ -535,6 +535,13 @@ let g:deoplete#enable_at_startup=1
 inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 let g:deoplete#file#enable_buffer_path=1
+" avoid conflict with vim-multiple-cursors
+function g:Multiple_cursors_before()
+	let g:deoplete#disable_auto_complete=1
+endfunction
+function g:Multiple_cursors_after()
+	let g:deoplete#disable_auto_complete=0
+endfunction
 
 " deoplete-ternjs
 "
