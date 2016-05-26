@@ -531,6 +531,11 @@ let g:deoplete#enable_at_startup=1
 inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 let g:deoplete#file#enable_buffer_path=1
+" ignore some completion sources (hope this makes it faster...)
+let g:deoplete#ignore_sources={}
+let g:deoplete#ignore_sources._=['omni']
+let g:deoplete#ignore_sources.c=['member', 'tag', 'dictionary']
+let g:deoplete#ignore_sources.javascript=['member', 'tag', 'dictionary']
 
 " deoplete-ternjs
 "
