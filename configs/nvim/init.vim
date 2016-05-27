@@ -523,7 +523,8 @@ let g:AutoPairsShortcutToggle='<leader><F3>'
 "
 let g:indexed_search_mappings=0
 let g:indexed_search_shortmess=1
-let g:index_search_numbered_only=1
+let g:indexed_search_numbered_only=1
+map <silent><F4> :ShowSearchIndex<CR>
 
 " deoplete
 "
