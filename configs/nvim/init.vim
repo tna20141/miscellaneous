@@ -79,7 +79,7 @@ Plug 'zchee/deoplete-clang'
 Plug 'Konfekt/FastFold'
 
 " js auto-complete engine
-"Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
+Plug 'ternjs/tern_for_vim'
 
 " generates compiler flags files to be used with YouCompleteMe
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
@@ -267,7 +267,7 @@ set nofoldenable
 
 " save and load sessions automatically at start/quit
 " sessions are stored on a per-cwd basis
-set sessionoptions=buffers,curdir,winsize,options
+set sessionoptions=buffers,curdir,winsize
 function! MakeSession()
 	if g:sessionfile != ""
 		echo "Saving..."
@@ -373,6 +373,7 @@ let g:airline#extensions#tabline#fnamemod=':t'
 let g:ctrlp_user_command='ag %s -l -g "" -p '.s:vim_extra_dir."/agignore"
 let g:ctrlp_working_path_mode='raw'
 nnoremap <leader><leader>p :CtrlPTag<CR>
+nnoremap <silent> <C-o> :CtrlPBuffer<CR>
 let g:ctrlp_match_window='results:100'
 let g:ctrlp_open_multiple_files='i'
 " custom features to delete buffers from ctrlp
@@ -576,3 +577,9 @@ let g:javaScript_fold=1
 " open all folds on all window on vim open
 " this must be placed after enabling folds
 autocmd VimEnter * :windo normal zR
+
+" tern_for_vim
+"
+let g:tern#command=["tern"]
+let g:tern#arguments=["--persistent"]
+let g:tern_set_omni_function=0

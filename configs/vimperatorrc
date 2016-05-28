@@ -11,6 +11,10 @@ set! browser.fullscreen.animate=false
 set! browser.fullscreen.autohide=true
 set! browser.fullscreen.animateUp=0
 
+" search engines
+set defsearch=google
+set suggestengines=google
+
 " Make bar yellow when focused.
 " From: http://www.reddit.com/r/linux/comments/99d55/i_could_use_a_little_vimperator_help_also/
 javascript <<EOF
@@ -27,6 +31,9 @@ EOF
 "
 " mappings
 "
+
+" mapleader
+let mapleader=','
 
 " Ctrl-A to select all instead of moving the cursor home
 inoremap <C-a> <C-Home><C-S-End>
