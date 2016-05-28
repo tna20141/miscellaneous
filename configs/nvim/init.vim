@@ -75,6 +75,9 @@ Plug 'carlitux/deoplete-ternjs'
 " C family language autocompleter
 Plug 'zchee/deoplete-clang'
 
+" reduce code folding computation
+Plug 'Konfekt/FastFold'
+
 " js auto-complete engine
 "Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 
@@ -118,7 +121,7 @@ Plug 'fidian/hexmode'
 Plug 'diepm/vim-rest-console'
 
 " additional text highlighting for javascript
-Plug 'jelera/vim-javascript-syntax'
+Plug 'tna20141/vim-javascript-syntax'
 
 " displaying colors from color codes in css files
 Plug 'ap/vim-css-color'
@@ -260,8 +263,11 @@ set completeopt-=preview
 let g:python_host_prog='/usr/bin/python'
 let g:python3_host_prog='/usr/bin/python3'
 
+set nofoldenable
+
 " save and load sessions automatically at start/quit
 " sessions are stored on a per-cwd basis
+set sessionoptions=buffers,curdir,winsize,options
 function! MakeSession()
 	if g:sessionfile != ""
 		echo "Saving..."
@@ -558,3 +564,15 @@ endfunction
 function g:Multiple_cursors_after()
 	let g:deoplete#disable_auto_complete=0
 endfunction
+
+" FastFold
+"
+let g:fastfold_fold_command_suffixes=['c', 'o', 'R']
+let g:fastfold_fold_movement_command=[]
+
+" vim-javascript-syntax
+"
+let g:javaScript_fold=1
+" open all folds on all window on vim open
+" this must be placed after enabling folds
+autocmd VimEnter * :windo normal zR
