@@ -583,3 +583,7 @@ autocmd VimEnter * :windo normal zR
 let g:tern#command=["tern"]
 let g:tern#arguments=["--persistent"]
 let g:tern_set_omni_function=0
+
+" vim-fugitive
+"
+nmap <silent><leader>gb :Gblame<CR>
