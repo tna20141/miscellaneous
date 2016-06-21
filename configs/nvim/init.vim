@@ -371,7 +371,7 @@ let g:airline#extensions#tabline#fnamemod=':t'
 " 	\ }
 " custom file listing commmand, using ag and an ignore file (created by hand)
 let g:ctrlp_user_command='ag %s -l -g "" -p '.s:vim_extra_dir."/agignore"
-let g:ctrlp_working_path_mode='raw'
+let g:ctrlp_working_path_mode='wra'
 nnoremap <leader><leader>p :CtrlPTag<CR>
 nnoremap <silent> <C-o> :CtrlPBuffer<CR>
 let g:ctrlp_match_window='results:100'
