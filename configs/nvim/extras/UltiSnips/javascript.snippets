@@ -24,3 +24,12 @@ API.post(namespace, method, post_params, request, function(api_error, api_respon
 	${5:return response.status(200).send();}
 });
 endsnippet
+
+snippet ins "util inspect"
+log.warn(require('util').inspect('${1:object}', false, null));
+endsnippet
+
+snippet rfun "request response function"
+var _${1:name} = function(request, response) {
+};
+endsnippet
