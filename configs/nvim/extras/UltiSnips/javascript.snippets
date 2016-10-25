@@ -29,6 +29,14 @@ snippet ins "util inspect"
 log.warn(require('util').inspect(${1:object}, false, null));
 endsnippet
 
+snippet insc "util inspect"
+console.log(require('util').inspect(${1:object}, false, null));
+endsnippet
+
+snippet lw "log warn"
+log.warn('[debug] ${1:1}');
+endsnippet
+
 snippet rfun "request response function"
 var _${1:name} = function(request, response) {
 };
