@@ -121,7 +121,8 @@ Plug 'fidian/hexmode'
 Plug 'diepm/vim-rest-console'
 
 " additional text highlighting for javascript
-Plug 'tna20141/vim-javascript-syntax'
+" Plug 'tna20141/vim-javascript-syntax'
+Plug 'othree/yajs.vim'
 
 " displaying colors from color codes in css files
 Plug 'ap/vim-css-color'
