@@ -13,3 +13,9 @@ Because of python version issues with YouCompleteMe, run ./youcompleteme_tern_fi
 Copy the file tern-project to $NEW_PROJECT/.tern-project
 It includes support for nodejs.
 Also YouCompleteMe's tern_for_vim doesn't include stuff like TernDef.
+
+Using deoplete-ternjs:
+Need to run ./deoplete-ternjs_fix.sh to make the tern server persistent.
+The script call has already been included in init.vim.
+
+deoplete-ternjs and tern_for_vim now run with the same server (thanks to .tern-port).
