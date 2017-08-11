@@ -1,0 +1,20 @@
+font-awesome http://fontawesome.io/
+icons, fonts, symbols and shit
+
+lightgallery http://sachinchoolur.github.io/lightGallery/
+gallery slide plugin for jquery
+
+animatescroll http://plugins.compzets.com/animatescroll/
+animate scrolling to element plugin for jquery
+
+imagesloaded https://imagesloaded.desandro.com/
+check when images are done loading (async loading)
+
+imagescroll https://github.com/pederan/Parallax-ImageScroll
+parallax effect for scrolling
+
+loadcss https://github.com/filamentgroup/loadCSS
+load css asynchronously
+
+validate https://validatejs.org/
+client-side validation
