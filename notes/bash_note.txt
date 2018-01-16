@@ -44,4 +44,4 @@ History
 Useful commands
 ---------------
 
-- list directories only: ls -d /path/to/parent/*/
+- list directories but not their contents: ls -d /path/to/parent/*/

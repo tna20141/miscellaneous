@@ -15,7 +15,7 @@ Default start directory is current directory. The ".." entries are never examine
 2. Options
 -P (default): dont follow symlinks.
 -L: follow symlinks.
--H: follow only symlinks on the command line arguments. 
+-H: follow only symlinks on the command line arguments.
 
 2. Expressions
 2.1. Options
@@ -53,9 +53,9 @@ Other useful tests: permission, samefile, size, ways true/false, fstype, inode, 
 -delete: implies "-depth" option.
 
 -exec <command> ; : execute command on every hit. Arguments before the semicolon are taken as the
-	command's arguments. "{}" are replaced by the filename being processed. The command is 
+	command's arguments. "{}" are replaced by the filename being processed. The command is
 	executed at the start directory. Note that the semicolon needs shell escape: '\;'.
--exec <command> {} + : same as above, but command is executed only once (I think), the filenames 
+-exec <command> {} + : same as above, but command is executed only once (I think), the filenames
 	are appended to the end like when using xargs.
 -execdir <command> { ; | {} + } : same as aboves, but execute command at the directory containing
 	the matched file, not the start directory.
@@ -86,4 +86,5 @@ find "dir" -name "filename" -printf "%t | %a | %c\n" : print mactime of files.
 find "dir" -mindepth 1 ... : exclude the start directory.
 find "dir" -anewer "archive.tar" -delete : remove archive.tar's extracted files and itself.
 find "dir" -cnewer "archive.tar" -delete : remove archive.tar's extracted files (but not itself).
+(note: the above doesn't seem to work now. Work around: copy the original file somewhere first)
 find "dir" { -amin | -cmin | -tmin } -1 -delete : remove files just twitched not long ago.
