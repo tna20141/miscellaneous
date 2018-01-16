@@ -45,3 +45,4 @@ Useful commands
 ---------------
 
 - list directories but not their contents: ls -d /path/to/parent/*/
+- add to group: usermod -aG <group> <username> (-G will remove you from existing groups!!!)
