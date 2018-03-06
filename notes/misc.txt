@@ -13,3 +13,32 @@ current executing directory, not the executable file's directory.
 
 General rsync command:
 rsync -avs --delete [--dry-run] -r <user@host:absolute_path> <dest_local_path>
+
+----------------
+
+csrf checking is actually carried out by browsers
+
+----------------
+
+Fcitx - unikey:
+To make it work, I did the following:
+- make sure related modules are installed (like fcitx-frontend-gtk3)
+- remove all the existing *_IM_MODULE environment variables pointing to ibus and point them to fcitx instead
+	For now, they are put in ~/.xprofile
+- make it smoother
+	Enable the macro in im tray menu (and in unikey) to type vietnamese better (like giá intead of gía)
+	Change Unikey method's keyboard layout to Vietnamese to stop it being the default for new windows
+		(this only works for firefox!)
+	Global Config -> Default Input Method State -> Inactive: solves the problem
+
+----------------
+
+i3 & destop:
+X Windows --> Window Manager (i3) --> Desktop Environment (Gnome/KDE)
+	(i3's DE seems to be named i3 as well, or it doesn't have one)
+Put all the startup commands (nm-applet, fcitx...) to i3/config
+default apps in ~/.config/mimeapps.list (Under [Default Applications])
+for firefox, the other apps are okay but I have to uninstall nautilus for it to choose thunar
+screen size is not a multiple of line height -> some terminal programs (like vim) don't fill the whole window
+switch horizontal then vertical mode (or opposite) to create a new container level
+to move out of the parent container, just "move" it out there

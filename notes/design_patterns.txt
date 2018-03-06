@@ -1,0 +1,1 @@
+Can put raw queries in the service layer. If the logic is common/general enough to be used across services, put it in the model layer instead.

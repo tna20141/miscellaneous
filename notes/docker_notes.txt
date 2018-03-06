@@ -1,0 +1,24 @@
+---------------------------
+
+container's filesystem persists even after stopped and restarted
+
+You have to have COMPOSE_PROJECT_NAME right. It defaults to cwd basename, so it works in yr.
+COMPOSE_PROJECT_NAME=yr docker-compose <the rest>
+
+docker-compose up doesn't seem to rebuild images (it worked once I think, but not really sure)
+
+bash -c "<cmd>" to execute complicated commands
+
+docker-compose run spawn a new container everytime run (image is not rebuilt)
+
+docker-compose DOWN removes containers, so be careful. Use STOP instead.
+
+to clean up docker:
+- remove all dangling images with:
+docker images -q --filter "dangling=true" | xargs docker rmi
+- remove ALL STOPPED CONTIANERS with:
+docker rm `docker ps --no-trunc -aq`
+(WARNING: be careful. Containers have changes that should be preserved)
+- remove the useless images with:
+docker rmi <imageid>
+(this may be changed positively in the future)
