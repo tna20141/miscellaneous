@@ -408,7 +408,7 @@ function! CtrlPBufferMappings()
 endfunction
 function! s:CtrlPCloseBuffer(bufline)
 	let bufnum = matchlist(a:bufline, '>\s\+\([0-9]\+\)')[1]
-	exec "bd" bufnum
+	exec "silent! bdelete" bufnum
 	return bufnum
 endfunction
 function! s:CtrlPDeleteBuffer()
