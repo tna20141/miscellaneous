@@ -61,7 +61,7 @@ Plug 'moll/vim-bbye'
 " Note: for tern, I had to change 'stdin_windows' -> 'stdin' in
 " tern-completer.py for it to work (probably a python version issue).
 " everytime this plugin is updated, go to extras/ & run ./youcompleteme_tern_fix.sh
-"Plug 'Valloric/YouCompleteMe', { 'do': 'python3 install.py --clang-completer --tern-completer' }
+" Plug 'Valloric/YouCompleteMe', { 'do': 'python3 install.py --clang-completer --tern-completer' }
 
 " code auto-completion for neovim (asynchonously)
 function! DoRemote(arg)
@@ -70,7 +70,7 @@ endfunction
 Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 
 " js autocomplete plugin for deoplete, using tern server
-Plug 'carlitux/deoplete-ternjs'
+" Plug 'carlitux/deoplete-ternjs'
 
 " C family language autocompleter
 Plug 'zchee/deoplete-clang'
@@ -121,8 +121,9 @@ Plug 'fidian/hexmode'
 Plug 'diepm/vim-rest-console'
 
 " additional text highlighting for javascript
-" Plug 'tna20141/vim-javascript-syntax'
-Plug 'othree/yajs.vim'
+Plug 'jelera/vim-javascript-syntax'
+" This one is causing huge slowdown when commenting big block of code
+" Plug 'othree/yajs.vim'
 
 " displaying colors from color codes in css files
 Plug 'ap/vim-css-color'
@@ -131,7 +132,7 @@ Plug 'ap/vim-css-color'
 Plug 'PotatoesMaster/i3-vim-syntax'
 
 " plugin of NERDTree to show git status of files
-"Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " show git diff in gutter column
 Plug 'airblade/vim-gitgutter'
@@ -164,6 +165,13 @@ Plug 'henrik/vim-indexed-search'
 " notable mapping keys: <C-n>
 Plug 'terryma/vim-multiple-cursors'
 
+" space-vim-dark theme
+Plug 'liuchengxu/space-vim-dark'
+
+" displaying 'space character' (space only, not tab) for easy viewing
+" this changes the conceal settings, which affects json files, but fine...
+Plug 'Yggdroot/indentLine'
+
 call plug#end()
 
 "========================
@@ -188,6 +196,7 @@ set softtabstop=0
 set noexpandtab
 
 " display tab characters
+" still need this since Yggdroot/indentLine is only for space
 set list
 exec "set listchars=tab:┆\\ "
 
@@ -215,7 +224,8 @@ set undofile
 
 " highlight current line
 " this could slow vim down, disable it if it does
- set cursorline
+" disabling it since it looks really bad with Yggdroot/indentLine
+" set cursorline
 
 " shell settings
 set shell=bash
@@ -232,9 +242,10 @@ syntax on
 
 " colorscheme
 " colorscheme github
-"colorscheme lucius
+" colorscheme lucius
 "LuciusWhite
-colorscheme molokai
+colorscheme space-vim-dark
+" hi Comment cterm=italic
 
 " load ftplugins and indent files
 filetype plugin on
@@ -264,7 +275,17 @@ set completeopt-=preview
 let g:python_host_prog='/usr/bin/python'
 let g:python3_host_prog='/usr/bin/python3'
 
+" not even sure what this does... does this just open folds at the beginning?
 set nofoldenable
+set foldmethod=syntax
+
+" diff window opens vertically
+" currently used by vim-fugitive
+set diffopt+=vertical
+
+" transparent background
+highlight Normal ctermbg=none
+highlight NonText ctermbg=none
 
 " save and load sessions automatically at start/quit
 " sessions are stored on a per-cwd basis
@@ -329,6 +350,9 @@ nnoremap <leader>o <C-o>
 " change current directory to the current file's
 nnoremap <leader><leader>. :lcd %:p:h<CR>
 
+" F5 to refresh the current buffer
+nnoremap <F5> :edit<CR>
+
 "================================
 " plugins specific configurations
 "================================
@@ -389,14 +413,20 @@ function! s:CtrlPCloseBuffer(bufline)
 endfunction
 function! s:CtrlPDeleteBuffer()
 	let marked = ctrlp#getmarkedlist()
+	" close the current buffer
 	if empty(marked)
+		let line = getline('.')
+		if line == ' == NO ENTRIES =='
+			return
+		endif
 		let linenum = line('.')
-		call s:CtrlPCloseBuffer(getline('.'))
+		call s:CtrlPCloseBuffer(line)
 		exec "norm \<F5>"
 		let linebottom = line('$')
 		if linenum < linebottom
 			exec linenum
 		endif
+	" close the selected buffer
 	else
 		for fname in marked
 			let bufid = fname =~ '\[\d\+\*No Name\]$' ? str2nr(matchstr(fname, '\d\+')) : fnamemodify(fname[2:], ':p')
@@ -409,19 +439,18 @@ endfunction
 
 " vim-mundo
 "
-nnoremap <silent><F5> :MundoToggle<CR>
+nnoremap <silent><F12> :MundoToggle<CR>
 let g:mundo_right=1
 let g:mundo_preview_bottom=1
 
 " YouCompleteMe
 "
 " let g:ycm_comfirm_extra_conf=0
-" this one is the default setting
+" " this one is the default setting
 " let g:ycm_add_preview_to_completeopt=0
 " let g:ycm_server_python_interpreter=g:python3_host_prog
-" the file .ycm_extra_conf.py should be created manually based on
-" YouCompleteMe's own extra_conf file
-" (I myself remove all the compilation flags except for -Wall)
+" " the file .ycm_extra_conf.py should be created manually based on YouCompleteMe's own extra_conf file
+" " (I myself remove all the compilation flags except for -Wall)
 " let g:ycm_global_ycm_extra_conf=s:vim_extra_dir."/ycm_extra_conf.py"
 " nmap <leader>gf :YcmCompleter GoToDefinition<CR>
 " nmap <leader>gd :YcmCompleter GoToDeclaration<CR>
@@ -436,6 +465,8 @@ let g:syntastic_auto_loc_list=1
 " set to 0 so it wouldn't interfere with YCM when opening C files
 let g:syntastic_check_on_open=0
 let g:syntastic_check_on_wq=0
+" use eslint for js
+let g:syntastic_javascript_checkers = ['eslint']
 " C-family files are already checked by YouCompleteMe
 noremap <silent><leader><leader>st :SyntasticToggleMode<CR>
 " syntastic seems slow, so switch it to passive mode at start
@@ -449,7 +480,15 @@ nmap <leader>ga <Plug>(EasyAlign)
 
 " vim-rest-tool
 "
-let g:vrc_cookie_jar='/tmp/vrc_cookie_jar'
+let g:vrc_curl_opts = {
+	\ '--cookie': '/tmp/vrc_cookie_jar',
+	\ '--cookie-jar': '/tmp/vrc_cookie_jar',
+	\ '--location': '',
+	\ '--include': '',
+	\ '--max-time': 3600,
+	\ '--silent': '',
+	\ '--show-error': '',
+	\}
 
 " nerdtree-git-plugin
 "
@@ -468,6 +507,9 @@ let g:NERDTreeIndicatorMapCustom={
 " vim-gitgutter
 "
 let g:gitgutter_max_signs=400
+" gitgutter uses this to update the gutter in a recent refactoring
+" lookout for any anomaly for now
+set updatetime=150
 
 " ultisnips
 "
@@ -588,3 +630,4 @@ let g:tern_set_omni_function=0
 " vim-fugitive
 "
 nmap <silent><leader>gb :Gblame<CR>
+

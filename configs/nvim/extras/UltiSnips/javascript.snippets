@@ -1,43 +1,29 @@
-snippet apig "API get"
-var namespace = '${1:namespace}';
-var method = '${2:method}';
-API.get(namespace, method, request, function(api_error, api_response, api_body) {
-	var message = ErrorUtils.handleApiError(api_error, api_response, api_body, namespace, method, null, request);
-	if (message) {
-		${3:return response.status(500).send();}
-	}
-
-	${4:return response.status(200).send();}
-});
-endsnippet
-
-snippet apip "API post"
-var namespace = '${1:namespace}';
-var method = '${2:method}';
-var post_params = ${3:post_params};
-API.post(namespace, method, post_params, request, function(api_error, api_response, api_body) {
-	var message = ErrorUtils.handleApiError(api_error, api_response, api_body, namespace, method, post_params, request);
-	if (message) {
-		${4:return response.status(500).send();}
-	}
-
-	${5:return response.status(200).send();}
-});
-endsnippet
-
 snippet ins "util inspect"
-log.warn(require('util').inspect(${1:object}, false, null));
-endsnippet
-
-snippet insc "util inspect"
 console.log(require('util').inspect(${1:object}, false, null));
 endsnippet
 
-snippet lw "log warn"
-log.warn('[debug] ${1:1}');
+snippet cl "console log"
+console.log(${1:data});
 endsnippet
 
-snippet rfun "request response function"
-var _${1:name} = function(request, response) {
-};
+snippet clt "console log with time"
+console.log((new Date()).toLocaleTimeString() + ' ' + ${1:data});
+endsnippet
+
+snippet cls "console log json stringify"
+console.log(JSON.stringify(${1:obj}));
+endsnippet
+
+snippet cle "console log error"
+console.log('error: ' + ${1:error});
+endsnippet
+
+snippet str "json stringify"
+JSON.stringify(${1:obj})
+endsnippet
+
+snippet newp "new promise"
+new Promise((resolve, reject) => {
+  ${1:content}
+});
 endsnippet
