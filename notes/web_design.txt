@@ -1,4 +1,0 @@
-@media (min-width: 600px) also includes @media (min-width: 400px)
-!important can override styles added by js
-CSRF
-ded script.js is not consistent with synchronization

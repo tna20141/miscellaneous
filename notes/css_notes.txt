@@ -1,0 +1,30 @@
+---------------------------------
+DESIGNS:
+
+Use a wrapper class for a page to style that page (put all page-specific styling within the class in sass)
+separate file for colors
+
+all the styles should be in components. Only use page-specific styling for page-specific styles (i.e. customizing)
+
+don't put margin in buttons or any element's style. Use a layout tag/class for that (like .form-group)
+
+---------------------------------
+NOTES:
+
+@media (min-width: 600px) also includes @media (min-width: 400px)
+!important can override styles added by js
+
+---------------------------------
+SASS & COMPASS:
+
+- Install ruby, ruby-dev & gem
+- $ gem install compass # also install sass
+- $ cd static/css && compass create <name>
+- $ cd <name> && compass watch
+- edit
+
+Bonus:
+- $ gem install css_parser # for "compass stats"
+- $ gem install sass-globbing # require 'sass-globbing' in config.rb
+- change screen.scss to main.scss (it sounds better)
+- remove ie.scss or print.scss if want
