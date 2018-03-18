@@ -8,6 +8,8 @@ all the styles should be in components. Only use page-specific styling for page-
 
 don't put margin in buttons or any element's style. Use a layout tag/class for that (like .form-group)
 
+put all spacings (padding, margin...) in a spacing scss file.
+
 ---------------------------------
 NOTES:
 
