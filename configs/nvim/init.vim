@@ -10,7 +10,7 @@
 " - ag
 " - tidy (for html syntax checking)
 " - pug-lint npm module (for pug/jade syntax checking)
-" - jshint npm module (for js syntax checking)
+" - eslint npm module (for js syntax checking)
 " - ctags (ctags -R *)
 " - jsctags npm module (see extras dir for how to generate tags file)
 " - tern npm module
@@ -42,7 +42,8 @@ endif
 call plug#begin(s:bundle_home)
 
 " statusline & tabline
-Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 " file explorer
 Plug 'scrooloose/nerdtree'
@@ -79,10 +80,10 @@ Plug 'zchee/deoplete-clang'
 Plug 'Konfekt/FastFold'
 
 " js auto-complete engine
-Plug 'ternjs/tern_for_vim'
+" Plug 'ternjs/tern_for_vim'
 
 " generates compiler flags files to be used with YouCompleteMe
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+" Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 
 " syntax diagnostic display
 Plug 'scrooloose/syntastic'
@@ -155,9 +156,6 @@ Plug 'easymotion/vim-easymotion'
 " directory search
 Plug 'dyng/ctrlsf.vim'
 
-" colorscheme pack
-Plug 'flazz/vim-colorschemes'
-
 " display search count && current match number
 Plug 'henrik/vim-indexed-search'
 
@@ -165,12 +163,18 @@ Plug 'henrik/vim-indexed-search'
 " notable mapping keys: <C-n>
 Plug 'terryma/vim-multiple-cursors'
 
-" space-vim-dark theme
-Plug 'liuchengxu/space-vim-dark'
-
 " displaying 'space character' (space only, not tab) for easy viewing
 " this changes the conceal settings, which affects json files, but fine...
 Plug 'Yggdroot/indentLine'
+
+" themes/colorschemes
+"
+
+" space-vim-dark theme
+Plug 'liuchengxu/space-vim-dark'
+
+" black/white vim colorscheme
+Plug 'ewilazarus/preto'
 
 call plug#end()
 
@@ -245,6 +249,7 @@ syntax on
 " colorscheme lucius
 "LuciusWhite
 colorscheme space-vim-dark
+" colorscheme preto
 " hi Comment cterm=italic
 
 " load ftplugins and indent files
@@ -301,17 +306,17 @@ function! MakeSession()
 	endif
 endfunction
 function! LoadSession()
-	if argc() == 0
-		let g:sessiondir = s:vim_home."/sessions".getcwd()
-		let g:sessionfile = g:sessiondir."/session.vim"
+	if argc()==0
+		let g:sessiondir=s:vim_home."/sessions".getcwd()
+		let g:sessionfile=g:sessiondir."/session.vim"
 		if (filereadable(g:sessionfile))
 			execute "source ".g:sessionfile
 		else
 			echo "No session loaded."
 		endif
 	else
-		let g:sessionfile = ""
-		let g:sessiondir = ""
+		let g:sessionfile=""
+		let g:sessiondir=""
 	endif
 endfunction
 " the 'nested' is because loading session might open some buffers,
@@ -386,6 +391,7 @@ let g:airline_powerline_fonts=0
 " let g:airline#entensions#branch#enabled=1
 " let g:airline#entensions#branch#format='Git_flow_branch_format'
 let g:airline#extensions#tabline#fnamemod=':t'
+" let g:airline_theme='minimalist'
 
 " ctrlp
 "
@@ -402,34 +408,34 @@ nnoremap <silent> <C-o> :CtrlPBuffer<CR>
 let g:ctrlp_match_window='results:100'
 let g:ctrlp_open_multiple_files='i'
 " custom features to delete buffers from ctrlp
-let g:ctrlp_buffer_func = { 'enter': 'CtrlPBufferMappings' }
+let g:ctrlp_buffer_func={ 'enter': 'CtrlPBufferMappings' }
 function! CtrlPBufferMappings()
 	nnoremap <buffer> <silent> <c-q> :call <sid>CtrlPDeleteBuffer()<cr>
 endfunction
 function! s:CtrlPCloseBuffer(bufline)
-	let bufnum = matchlist(a:bufline, '>\s\+\([0-9]\+\)')[1]
+	let bufnum=matchlist(a:bufline, '>\s\+\([0-9]\+\)')[1]
 	exec "silent! bdelete" bufnum
 	return bufnum
 endfunction
 function! s:CtrlPDeleteBuffer()
-	let marked = ctrlp#getmarkedlist()
+	let marked=ctrlp#getmarkedlist()
 	" close the current buffer
 	if empty(marked)
-		let line = getline('.')
-		if line == ' == NO ENTRIES =='
+		let line=getline('.')
+		if line==' == NO ENTRIES =='
 			return
 		endif
-		let linenum = line('.')
+		let linenum=line('.')
 		call s:CtrlPCloseBuffer(line)
 		exec "norm \<F5>"
-		let linebottom = line('$')
+		let linebottom=line('$')
 		if linenum < linebottom
 			exec linenum
 		endif
 	" close the selected buffer
 	else
 		for fname in marked
-			let bufid = fname =~ '\[\d\+\*No Name\]$' ? str2nr(matchstr(fname, '\d\+')) : fnamemodify(fname[2:], ':p')
+			let bufid=fname=~'\[\d\+\*No Name\]$' ? str2nr(matchstr(fname, '\d\+')) : fnamemodify(fname[2:], ':p')
 			exec "silent! bdelete" bufid
 		endfor
 		exec "norm \<F5>"
@@ -466,7 +472,7 @@ let g:syntastic_auto_loc_list=1
 let g:syntastic_check_on_open=0
 let g:syntastic_check_on_wq=0
 " use eslint for js
-let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_checkers=['eslint']
 " C-family files are already checked by YouCompleteMe
 noremap <silent><leader><leader>st :SyntasticToggleMode<CR>
 " syntastic seems slow, so switch it to passive mode at start
@@ -480,7 +486,7 @@ nmap <leader>ga <Plug>(EasyAlign)
 
 " vim-rest-tool
 "
-let g:vrc_curl_opts = {
+let g:vrc_curl_opts={
 	\ '--cookie': '/tmp/vrc_cookie_jar',
 	\ '--cookie-jar': '/tmp/vrc_cookie_jar',
 	\ '--location': '',
@@ -527,7 +533,7 @@ map / <Plug>(incsearch-forward)
 map ? <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 set hlsearch
-let g:incsearch#auto_nohlsearch = 1
+let g:incsearch#auto_nohlsearch=1
 map n  <Plug>(incsearch-nohl-n)
 map N  <Plug>(incsearch-nohl-N)
 map *  <Plug>(incsearch-nohl-*)
