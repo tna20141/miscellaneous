@@ -1,1 +1,7 @@
 Can put raw queries in the service layer. If the logic is common/general enough to be used across services, put it in the model layer instead.
+
+If a function has side effect, it should only return:
+- something for chaining
+- the updated data
+- status of the call (ok, failure etc.)
+I.e. it should not modify things and return calculated data at the same time. It's ugly.
