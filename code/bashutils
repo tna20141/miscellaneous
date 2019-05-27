@@ -54,7 +54,7 @@ function bak {
 
 # url encode of a string
 function urlencode {
-	local string="$1"	
+	local string="$1"
 	local strlen=${#string}
 	local encoded=""
 
@@ -80,6 +80,7 @@ function urldecode {
 }
 
 # kill a process tree
+# killtree <PID> <SIGNAL>
 function killtree {
 	local __sudocmd=""
 	local __sudopt=""
@@ -89,9 +90,21 @@ function killtree {
 	eval $SUDO_CHECK
 
 	# needed to stop quickly forking parent from producing children between child killing and parent killing
-	${__sudocmd}kill -stop ${_pid} 
+	${__sudocmd}kill -stop ${_pid}
 	for _child in $(ps -o pid --no-headers --ppid ${_pid}); do
 		killtree ${__sudopt} ${_child} ${_sig}
 	done
 	${__sudocmd}kill ${_sig} ${_pid}
+}
+
+# switch audio sink to sony headset
+function ps4hs {
+	local sink_num=$(pacmd list-sinks | grep -B 1 "Sony_Computer" | head -1 | sed 's/.*index: \([0-9]*\).*/\1/')
+	pacmd set-default-sink $sink_num
+}
+
+# cleanup docker junks
+function dockclean {
+	docker images -q --filter "dangling=true" | xargs docker rmi
+	docker volume ls -qf dangling=true | xargs -r docker volume rm
 }
