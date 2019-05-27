@@ -5,3 +5,16 @@ If a function has side effect, it should only return:
 - the updated data
 - status of the call (ok, failure etc.)
 I.e. it should not modify things and return calculated data at the same time. It's ugly.
+
+Never use null (or null references). Pretend it doesn't exist.
+
+CODE FLOW ATOMICITY:
+- 2 things to do when a step fails:
+	Retrying
+	- Usually within a short amount of time
+	- Inputs and steps (& error codes) should be clearly defined to make the flow easy to continue
+	- Can emit an event, and a listener can pick it up later and continue
+	Reverting
+	- Probably when all retries are used
+	- Just revert all the steps sequentially in the reversed order
+	- Probably doesn't need to handle error here (notification if possible)
