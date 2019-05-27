@@ -277,8 +277,8 @@ set completeopt-=preview
 
 " python interpreters
 " setting these options directly to be sure
-let g:python_host_prog='/usr/bin/python'
-let g:python3_host_prog='/usr/bin/python3'
+" let g:python_host_prog='/usr/bin/python'
+" let g:python3_host_prog='/usr/bin/python3'
 
 " not even sure what this does... does this just open folds at the beginning?
 set nofoldenable
@@ -357,6 +357,9 @@ nnoremap <leader><leader>. :lcd %:p:h<CR>
 
 " F5 to refresh the current buffer
 nnoremap <F5> :edit<CR>
+
+" disable key to Ex mode
+:map Q <Nop>
 
 "================================
 " plugins specific configurations
@@ -569,6 +572,11 @@ let g:ctrlsf_extra_backend_args={
 " convenient mapping for finding current file without context lines
 " add PATTERN and PATH (%) after this
 nmap <leader><leader>/ :CtrlSF -C 0<Space>
+" auto focus on the ctrlsf pane
+let g:ctrlsf_auto_focus={
+	\ 'at':'done',
+	\ 'duration_less_than':1000
+	\ }
 
 " auto-pairs
 "
@@ -607,12 +615,12 @@ let g:deoplete#sources#clang#clang_header='/usr/lib/llvm-3.8/include'
 
 " vim-multiple-cursors
 "
-" avoid conflict with vim-multiple-cursors
+" avoid conflict with deoplete
 function g:Multiple_cursors_before()
-	let g:deoplete#disable_auto_complete=1
+	call deoplete#disable()
 endfunction
 function g:Multiple_cursors_after()
-	let g:deoplete#disable_auto_complete=0
+	call deoplete#enable()
 endfunction
 
 " FastFold
@@ -636,4 +644,3 @@ let g:tern_set_omni_function=0
 " vim-fugitive
 "
 nmap <silent><leader>gb :Gblame<CR>
-

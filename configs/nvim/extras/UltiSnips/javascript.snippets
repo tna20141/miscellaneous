@@ -6,17 +6,25 @@ snippet cl "console log"
 console.log(${1:data});
 endsnippet
 
-snippet clt "console log with time"
-console.log((new Date()).toLocaleTimeString() + ' ' + ${1:data});
+# snippet clt "console log with time"
+# console.log((new Date()).toLocaleTimeString() + ' ' + ${1:data});
+# endsnippet
+
+snippet cc "console log exception" i
+.catch(e => { console.log(e); throw e; })
 endsnippet
 
-snippet cls "console log json stringify"
+snippet ct "console log then" i
+.then(a => { console.log(a); return a; })
+endsnippet
+
+snippet cs "console log json stringify"
 console.log(JSON.stringify(${1:obj}));
 endsnippet
 
-snippet cle "console log error"
-console.log('error: ' + ${1:error});
-endsnippet
+# snippet cle "console log error"
+# console.log('error: ' + ${1:error});
+# endsnippet
 
 snippet str "json stringify"
 JSON.stringify(${1:obj})
@@ -26,4 +34,12 @@ snippet newp "new promise"
 new Promise((resolve, reject) => {
   ${1:content}
 });
+endsnippet
+
+snippet f "function frontend" i
+function (${1})
+endsnippet
+
+snippet hl "hapi logger"
+hapiLogger.log('${1:error}', '${2}', ${3});
 endsnippet
