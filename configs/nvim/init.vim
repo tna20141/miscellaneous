@@ -16,8 +16,17 @@
 " - tern npm module
 " - clang (and libclang)
 " - to be continued...
+"
+" UPDATES: not all of these are needed as e.g. I don't code C anymore
 
 " For first time setup, run :PlugInstall and restart nvim
+" To update vim-plug, run :PlugUpgrade
+" To update packages, run :PlugUpdate
+"
+" To update python versions:
+" - Install new python version
+" - Update the path if necessary (update-alternatives on ubuntu)
+" - $ pip/pip3 install --user neovim # this probably updates python for nvim
 "================================
 
 " turn off Vi compatibility (this should be put at the beginning)
@@ -57,33 +66,11 @@ Plug 'simnalamburt/vim-mundo'
 " closing buffers without closing vim windows
 Plug 'moll/vim-bbye'
 
-" code auto-completion
-" add language supports to the post-update hook as needed
-" Note: for tern, I had to change 'stdin_windows' -> 'stdin' in
-" tern-completer.py for it to work (probably a python version issue).
-" everytime this plugin is updated, go to extras/ & run ./youcompleteme_tern_fix.sh
-" Plug 'Valloric/YouCompleteMe', { 'do': 'python3 install.py --clang-completer --tern-completer' }
-
 " code auto-completion for neovim (asynchonously)
-function! DoRemote(arg)
-	UpdateRemotePlugins
-endfunction
-Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
-
-" js autocomplete plugin for deoplete, using tern server
-" Plug 'carlitux/deoplete-ternjs'
-
-" C family language autocompleter
-Plug 'zchee/deoplete-clang'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " reduce code folding computation
 Plug 'Konfekt/FastFold'
-
-" js auto-complete engine
-" Plug 'ternjs/tern_for_vim'
-
-" generates compiler flags files to be used with YouCompleteMe
-" Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
 
 " syntax diagnostic display
 Plug 'scrooloose/syntastic'
@@ -104,9 +91,6 @@ Plug 'tpope/vim-surround'
 
 " support repeating of plugin key mappings
 Plug 'tpope/vim-repeat'
-
-" tag navigation window
-Plug 'majutsushi/tagbar'
 
 " alignment helper
 "Plug 'junegunn/vim-easy-align'
@@ -378,12 +362,6 @@ let g:NERDTreeShowBookmarks=1
 " auto close NERDTree before quitting vim (for window rendering reasons)
 autocmd VimLeavePre * :NERDTreeClose
 
-" tagbar
-"
-noremap <silent><F8> :TagbarToggle<CR>
-let g:tagbar_autofocus=1
-let g:tagbar_foldlevel=0
-
 " airline
 "
 set noshowmode
@@ -451,18 +429,6 @@ endfunction
 nnoremap <silent><F12> :MundoToggle<CR>
 let g:mundo_right=1
 let g:mundo_preview_bottom=1
-
-" YouCompleteMe
-"
-" let g:ycm_comfirm_extra_conf=0
-" " this one is the default setting
-" let g:ycm_add_preview_to_completeopt=0
-" let g:ycm_server_python_interpreter=g:python3_host_prog
-" " the file .ycm_extra_conf.py should be created manually based on YouCompleteMe's own extra_conf file
-" " (I myself remove all the compilation flags except for -Wall)
-" let g:ycm_global_ycm_extra_conf=s:vim_extra_dir."/ycm_extra_conf.py"
-" nmap <leader>gf :YcmCompleter GoToDefinition<CR>
-" nmap <leader>gd :YcmCompleter GoToDeclaration<CR>
 
 " syntastic
 "
@@ -595,33 +561,19 @@ map <silent><F4> :ShowSearchIndex<CR>
 let g:deoplete#enable_at_startup=1
 inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" path texts are based from buffer (opened file path) instead of cwd
 let g:deoplete#file#enable_buffer_path=1
-" ignore some completion sources (hope this makes it faster...)
-let g:deoplete#ignore_sources={}
-let g:deoplete#ignore_sources._=['omni']
-let g:deoplete#ignore_sources.c=['member', 'tag', 'dictionary']
-let g:deoplete#ignore_sources.javascript=['member', 'tag', 'dictionary']
-
-" deoplete-ternjs
-"
-let g:tern_request_timeout=1
-let g:tern_show_signature_in_pum=0
-
-" deoplete-clang
-"
-" these 2 options need to be changed depending on when clang is installed
-let g:deoplete#sources#clang#libclang_path='/usr/lib/llvm-3.8/lib/libclang-3.8.0.so'
-let g:deoplete#sources#clang#clang_header='/usr/lib/llvm-3.8/include'
 
 " vim-multiple-cursors
 "
 " avoid conflict with deoplete
-function g:Multiple_cursors_before()
-	call deoplete#disable()
-endfunction
-function g:Multiple_cursors_after()
-	call deoplete#enable()
-endfunction
+" new ver dont have this problem anymore so keep it here and monitor for now
+" function g:Multiple_cursors_before()
+"	call deoplete#disable()
+" endfunction
+" function g:Multiple_cursors_after()
+"	call deoplete#enable()
+" endfunction
 
 " FastFold
 "
@@ -634,12 +586,6 @@ let g:javaScript_fold=1
 " open all folds on all window on vim open
 " this must be placed after enabling folds
 autocmd VimEnter * :windo normal zR
-
-" tern_for_vim
-"
-let g:tern#command=["tern"]
-let g:tern#arguments=["--persistent"]
-let g:tern_set_omni_function=0
 
 " vim-fugitive
 "
