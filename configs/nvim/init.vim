@@ -26,6 +26,7 @@
 " To update python versions:
 " - Install new python version
 " - Update the path if necessary (update-alternatives on ubuntu)
+" - $ python3 -m pip install --upgrade pip # if necessary
 " - $ pip/pip3 install --user neovim # this probably updates python for nvim
 "================================
 
@@ -232,8 +233,8 @@ syntax on
 " colorscheme github
 " colorscheme lucius
 "LuciusWhite
-colorscheme space-vim-dark
-" colorscheme preto
+" colorscheme space-vim-dark
+colorscheme preto
 " hi Comment cterm=italic
 
 " load ftplugins and indent files
@@ -372,7 +373,7 @@ let g:airline_powerline_fonts=0
 " let g:airline#entensions#branch#enabled=1
 " let g:airline#entensions#branch#format='Git_flow_branch_format'
 let g:airline#extensions#tabline#fnamemod=':t'
-" let g:airline_theme='minimalist'
+let g:airline_theme='minimalist'
 
 " ctrlp
 "
