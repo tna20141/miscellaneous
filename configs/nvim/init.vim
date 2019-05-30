@@ -373,7 +373,7 @@ let g:airline_powerline_fonts=0
 " let g:airline#entensions#branch#enabled=1
 " let g:airline#entensions#branch#format='Git_flow_branch_format'
 let g:airline#extensions#tabline#fnamemod=':t'
-let g:airline_theme='minimalist'
+" let g:airline_theme='minimalist'
 
 " ctrlp
 "
@@ -568,13 +568,12 @@ let g:deoplete#file#enable_buffer_path=1
 " vim-multiple-cursors
 "
 " avoid conflict with deoplete
-" new ver dont have this problem anymore so keep it here and monitor for now
-" function g:Multiple_cursors_before()
-"	call deoplete#disable()
-" endfunction
-" function g:Multiple_cursors_after()
-"	call deoplete#enable()
-" endfunction
+function g:Multiple_cursors_before()
+	call deoplete#disable()
+endfunction
+function g:Multiple_cursors_after()
+	call deoplete#enable()
+endfunction
 
 " FastFold
 "
