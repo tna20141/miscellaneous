@@ -1,3 +1,7 @@
+# modules needed:
+#  i3pystatus
+#  netifaces
+#  psutil
 from i3pystatus import Status
 
 status = Status()

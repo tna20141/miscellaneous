@@ -4,11 +4,14 @@ const repl = require('repl');
 
 const libs = {
   '_': 'lodash',
+  fp: 'lodash/fp',
   moment: 'moment',
   mtz: 'moment-timezone',
-  async: 'async',
+  Async: 'async',
   uuid: 'node-uuid',
-  R: 'ramda',
+  r: 'ramda',
+  s: 'sanctuary',
+  Fluture: 'fluture',
 };
 
 const builtins = {

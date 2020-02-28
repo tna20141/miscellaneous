@@ -233,8 +233,9 @@ syntax on
 " colorscheme github
 " colorscheme lucius
 "LuciusWhite
-" colorscheme space-vim-dark
-colorscheme preto
+colorscheme space-vim-dark
+" colorscheme preto
+" colorscheme atom-dark
 " hi Comment cterm=italic
 
 " load ftplugins and indent files
@@ -568,6 +569,7 @@ let g:deoplete#file#enable_buffer_path=1
 " vim-multiple-cursors
 "
 " avoid conflict with deoplete
+" new ver dont have this problem anymore so keep it here and monitor for now
 function g:Multiple_cursors_before()
 	call deoplete#disable()
 endfunction
