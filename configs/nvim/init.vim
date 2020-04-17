@@ -77,10 +77,13 @@ Plug 'Konfekt/FastFold'
 Plug 'scrooloose/syntastic'
 
 " syntax highlighting for pug/jade
-Plug 'digitaltoad/vim-pug'
+" Plug 'digitaltoad/vim-pug'
 
 " auto insert brackets/quotes... in pairs
 Plug 'jiangmiao/auto-pairs'
+
+" auto closing html tag
+Plug 'alvan/vim-closetag'
 
 " easier block commenting
 " notable mapping keys: g
@@ -110,6 +113,9 @@ Plug 'diepm/vim-rest-console'
 Plug 'jelera/vim-javascript-syntax'
 " This one is causing huge slowdown when commenting big block of code
 " Plug 'othree/yajs.vim'
+
+" jsx
+Plug 'maxmellon/vim-jsx-pretty'
 
 " displaying colors from color codes in css files
 Plug 'ap/vim-css-color'
@@ -154,12 +160,10 @@ Plug 'Yggdroot/indentLine'
 
 " themes/colorschemes
 "
-
 " space-vim-dark theme
 Plug 'liuchengxu/space-vim-dark'
 
-" black/white vim colorscheme
-Plug 'ewilazarus/preto'
+Plug 'dikiaap/minimalist'
 
 call plug#end()
 
@@ -230,13 +234,8 @@ set lazyredraw
 syntax on
 
 " colorscheme
-" colorscheme github
-" colorscheme lucius
-"LuciusWhite
-colorscheme space-vim-dark
-" colorscheme preto
-" colorscheme atom-dark
-" hi Comment cterm=italic
+" colorscheme space-vim-dark
+colorscheme minimalist
 
 " load ftplugins and indent files
 filetype plugin on
@@ -592,3 +591,7 @@ autocmd VimEnter * :windo normal zR
 " vim-fugitive
 "
 nmap <silent><leader>gb :Gblame<CR>
+
+" vim-closetag
+"
+let g:closetag_filenames = '*.html,*.js'
