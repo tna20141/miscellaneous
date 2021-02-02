@@ -159,6 +159,9 @@ Plug 'terryma/vim-multiple-cursors'
 " this changes the conceal settings, which affects json files, but fine...
 Plug 'Yggdroot/indentLine'
 
+" python indentation
+Plug 'Vimjas/vim-python-pep8-indent'
+
 " Python syntax highlighting & checking
 Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 
@@ -501,8 +504,8 @@ let g:vrc_curl_opts={
 	\ '--show-error': '',
 	\}
 
-" " nerdtree-git-plugin
-" "
+" nerdtree-git-plugin
+"
 let g:NERDTreeGitStatusIndicatorMapCustom={
 	\ "Modified"  : "✹",
 	\ "Staged"    : "✚",
@@ -595,8 +598,6 @@ map <silent><F4> :ShowSearchIndex<CR>
 " " deoplete
 " "
 " let g:deoplete#enable_at_startup=1
-" inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 " " path texts are based from buffer (opened file path) instead of cwd
 " let g:deoplete#file#enable_buffer_path=1
 
