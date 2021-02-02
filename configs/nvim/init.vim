@@ -4,6 +4,7 @@
 " - python & python3
 " - pip & pip3
 " - pip(2) install neovim && pip3 install neovim
+"   pip pynvim module
 " - cmake
 " - nodejs & npm
 " - xclip
@@ -68,10 +69,10 @@ Plug 'simnalamburt/vim-mundo'
 Plug 'moll/vim-bbye'
 
 " code auto-completion for neovim (asynchonously)
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " reduce code folding computation
-Plug 'Konfekt/FastFold'
+" Plug 'Konfekt/FastFold'
 
 " syntax diagnostic display
 Plug 'scrooloose/syntastic'
@@ -157,6 +158,28 @@ Plug 'terryma/vim-multiple-cursors'
 " displaying 'space character' (space only, not tab) for easy viewing
 " this changes the conceal settings, which affects json files, but fine...
 Plug 'Yggdroot/indentLine'
+
+" Python syntax highlighting & checking
+Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+
+" completion framework
+" See https://github.com/ncm2/ncm2
+Plug 'ncm2/ncm2'
+Plug 'roxma/nvim-yarp'
+" completion sources for ncm2
+Plug 'ncm2/ncm2-bufword'
+" Path
+Plug 'ncm2/ncm2-path'
+" Css
+Plug 'ncm2/ncm2-cssomni'
+" Js
+Plug 'ncm2/ncm2-tern',  {'do': 'npm install'}
+" Python
+" Needs jedi pip module.
+" Need to be careful with virtual environment, since neovim could use the
+" python environment in the venv itself!
+" For now, setting g:python3_host_prog to an absolute path is enough.
+Plug 'ncm2/ncm2-jedi'
 
 " themes/colorschemes
 "
@@ -263,7 +286,7 @@ set completeopt-=preview
 " python interpreters
 " setting these options directly to be sure
 " let g:python_host_prog='/usr/bin/python'
-" let g:python3_host_prog='/usr/bin/python3'
+let g:python3_host_prog='/usr/bin/python3'
 
 " not even sure what this does... does this just open folds at the beginning?
 set nofoldenable
@@ -343,8 +366,20 @@ nnoremap <leader><leader>. :lcd %:p:h<CR>
 " F5 to refresh the current buffer
 nnoremap <F5> :edit<CR>
 
+" <leader>F5 to reload configuration
+nnoremap <leader><F5> :exec "source ".g:viminit<CR>
+
 " disable key to Ex mode
 :map Q <Nop>
+
+" Use <Tab> to cycle through auto-completion
+inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" When the <Enter> key is pressed while the popup menu is visible, it only
+" hides the menu. Use this mapping to close the menu and also start a new
+" line.
+inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 
 "================================
 " plugins specific configurations
@@ -466,9 +501,9 @@ let g:vrc_curl_opts={
 	\ '--show-error': '',
 	\}
 
-" nerdtree-git-plugin
-"
-let g:NERDTreeIndicatorMapCustom={
+" " nerdtree-git-plugin
+" "
+let g:NERDTreeGitStatusIndicatorMapCustom={
 	\ "Modified"  : "✹",
 	\ "Staged"    : "✚",
 	\ "Untracked" : "✭",
@@ -557,29 +592,30 @@ let g:indexed_search_shortmess=1
 let g:indexed_search_numbered_only=1
 map <silent><F4> :ShowSearchIndex<CR>
 
-" deoplete
-"
-let g:deoplete#enable_at_startup=1
-inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-" path texts are based from buffer (opened file path) instead of cwd
-let g:deoplete#file#enable_buffer_path=1
+" " deoplete
+" "
+" let g:deoplete#enable_at_startup=1
+" inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" " path texts are based from buffer (opened file path) instead of cwd
+" let g:deoplete#file#enable_buffer_path=1
 
 " vim-multiple-cursors
 "
 " avoid conflict with deoplete
 " new ver dont have this problem anymore so keep it here and monitor for now
-function g:Multiple_cursors_before()
-	call deoplete#disable()
-endfunction
-function g:Multiple_cursors_after()
-	call deoplete#enable()
-endfunction
+" remember to comment this out when not using deoplete
+" function g:Multiple_cursors_before()
+" 	call deoplete#disable()
+" endfunction
+" function g:Multiple_cursors_after()
+" 	call deoplete#enable()
+" endfunction
 
 " FastFold
 "
-let g:fastfold_fold_command_suffixes=['c', 'o', 'R']
-let g:fastfold_fold_movement_command=[]
+" let g:fastfold_fold_command_suffixes=['c', 'o', 'R']
+" let g:fastfold_fold_movement_command=[]
 
 " vim-javascript-syntax
 "
@@ -594,4 +630,19 @@ nmap <silent><leader>gb :Gblame<CR>
 
 " vim-closetag
 "
-let g:closetag_filenames = '*.html,*.js'
+let g:closetag_filenames='*.html,*.js,*.jsx'
+let g:closetag_emptyTags_caseSensitive=1
+
+" semshi
+"
+" don't display error sign in the sign column
+let g:semshi#error_sign=v:false
+" avoid instant re-parsing (good for large files)
+let g:semshi#update_delay_factor=0.00005
+
+" ncm2
+"
+" enable ncm2 for all buffers
+autocmd BufEnter * call ncm2#enable_for_buffer()
+" :help Ncm2PopupOpen for more information
+set completeopt=noinsert,menuone,noselect
