@@ -114,3 +114,15 @@ function ecut {
 	local _num=$1
 	sed 's/\(\s\)\+/ /g' | cut -d' ' -f $1
 }
+
+function docksh {
+  docker exec -it "$1" bash
+}
+
+function docklog {
+	if [ -n "$2" ]; then
+		docker logs -ft --tail "$2" "$1"
+	else
+		docker logs -ft --tail 10 "$1"
+	fi
+}
