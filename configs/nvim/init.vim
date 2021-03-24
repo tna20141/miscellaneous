@@ -184,6 +184,14 @@ Plug 'ncm2/ncm2-tern',  {'do': 'npm install'}
 " For now, setting g:python3_host_prog to an absolute path is enough.
 Plug 'ncm2/ncm2-jedi'
 
+" LSP
+" coc-settings.json is required in the current directory.
+" Specific language servers:
+" - Haskell:
+"   haskell-language-server
+"   Install: https://github.com/haskell/haskell-language-server
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
 " themes/colorschemes
 "
 " space-vim-dark theme
@@ -647,3 +655,20 @@ let g:semshi#update_delay_factor=0.00005
 autocmd BufEnter * call ncm2#enable_for_buffer()
 " :help Ncm2PopupOpen for more information
 set completeopt=noinsert,menuone,noselect
+
+" coc.nvim
+"
+" show item's documentation in a popup (if it exists)
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
