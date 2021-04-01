@@ -1,0 +1,4 @@
+#!/bin/bash
+xrandr --output eDP-1 --mode 1920x1080
+nm-applet &
+feh --bg-scale ~/Pictures/1531254228_thumb-1920-843674.jpg

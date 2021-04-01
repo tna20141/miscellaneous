@@ -1,7 +1,10 @@
 # modules needed:
-#  i3pystatus
+#  i3pystatus (might need to install from master, see its github)
+#  basiciw (with libiw-dev)
 #  netifaces
 #  psutil
+#
+# might need to change various locales (in /etc/default/locale to en_US.UTF-8 and restart)
 from i3pystatus import Status
 
 status = Status()

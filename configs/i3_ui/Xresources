@@ -44,13 +44,11 @@ URxvt*color14 : #34E2E2
 URxvt*color7  : #D3D7CF
 URxvt*color15 : #EEEEEC
 
-! URxvt.keysym.Shift-Control-C: perl:selection-to-clipboard:copy
-! URxvt.keysym.Shift-Control-V: perl:selection-to-clipboard:paste
+URxvt.keysym.Shift-Control-C: eval:selection_to_clipboard
+URxvt.keysym.Shift-Control-V: eval:paste_clipboard
 
 URxvt.clipboard.copycmd: xclip -i -selection clipboard
 URxvt.clipboard.pastecmd: xclip -o -selection clipboard
-URxvt.keysym.Shift-Control-C: perl:clipboard:copy
-URxvt.keysym.Shift-Control-V: perl:clipboard:paste
 URxvt*iso14755: false
 URxvt*iso14755_52: false
 
