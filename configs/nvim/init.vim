@@ -5,6 +5,7 @@
 " - pip & pip3
 " - pip(2) install neovim && pip3 install neovim
 "   pip pynvim module
+"   pip jedi module
 " - cmake
 " - nodejs & npm
 " - xclip
