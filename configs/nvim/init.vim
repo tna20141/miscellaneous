@@ -191,6 +191,7 @@ Plug 'ncm2/ncm2-jedi'
 " - Haskell:
 "   haskell-language-server
 "   Install: https://github.com/haskell/haskell-language-server
+"   (troubleshooting: run 'stack upgrade')
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " themes/colorschemes
