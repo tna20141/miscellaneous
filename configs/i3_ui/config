@@ -138,7 +138,7 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 
 # print screen
 # need to install 'scrot' first
-bindsym Print exec "scrot -q 100 ~/Pictures/Screenshot_%Y-%m-%d_%H:%M:%S.png"
+bindsym --release Print exec "import /home/anhlq/Downloads/screenshots/Screenshot_$(date +'%Y-%m-%d-%H-%M-%S').png"
 bindsym $mod+Print exec "scrot -q 100 -u ~/Pictures/Screenshot_%Y-%m-%d_%H:%M:%S.png"
 # assuming the resolution is 1920x1080 and taking the right half
 bindsym $mod+Shift+Print exec "scrot -q 100 /tmp/screenshot.png; convert -gravity West -chop 1920x0 /tmp/screenshot.png ~/Pictures/Screenshot_$(date '+%Y-%m-%d_%H:%M:%S').png"

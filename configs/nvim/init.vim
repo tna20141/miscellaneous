@@ -119,6 +119,10 @@ Plug 'jelera/vim-javascript-syntax'
 " jsx
 Plug 'maxmellon/vim-jsx-pretty'
 
+" tsx
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+
 " displaying colors from color codes in css files
 Plug 'ap/vim-css-color'
 
