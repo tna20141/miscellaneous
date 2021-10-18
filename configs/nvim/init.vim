@@ -181,7 +181,7 @@ Plug 'ncm2/ncm2-path'
 " Css
 Plug 'ncm2/ncm2-cssomni'
 " Js
-Plug 'ncm2/ncm2-tern',  {'do': 'npm install'}
+" Plug 'ncm2/ncm2-tern',  {'do': 'npm install'}
 " Python
 " Needs jedi pip module.
 " Need to be careful with virtual environment, since neovim could use the

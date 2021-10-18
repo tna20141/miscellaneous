@@ -5,6 +5,7 @@ const repl = require('repl');
 const libs = {
   '_': 'lodash',
   fp: 'lodash/fp',
+  datefns: 'date-fns',
   moment: 'moment',
   mtz: 'moment-timezone',
   Async: 'async',
