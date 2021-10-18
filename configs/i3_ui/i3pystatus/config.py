@@ -2,9 +2,11 @@
 #  i3pystatus (might need to install from master, see its github)
 #  basiciw (with libiw-dev)
 #  netifaces
+#  colour
 #  psutil
-#
+#  
 # might need to change various locales (in /etc/default/locale to en_US.UTF-8 and restart)
+# pip(3) install without sudo is fine
 from i3pystatus import Status
 
 status = Status()
