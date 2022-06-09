@@ -11,12 +11,10 @@
 " - xclip
 " - ag
 " - tidy (for html syntax checking)
-" - pug-lint npm module (for pug/jade syntax checking)
 " - eslint npm module (for js syntax checking)
-" - ctags (ctags -R *)
-" - jsctags npm module (see extras dir for how to generate tags file)
-" - tern npm module
-" - clang (and libclang)
+" - deno (preferrably from github)
+"   related language servers
+"   lua
 " - to be continued...
 "
 " UPDATES: not all of these are needed as e.g. I don't code C anymore
@@ -66,20 +64,11 @@ Plug 'ctrlpvim/ctrlp.vim'
 " undo tree visualizer
 Plug 'simnalamburt/vim-mundo'
 
+" camel case motion
+Plug 'bkad/CamelCaseMotion'
+
 " closing buffers without closing vim windows
 Plug 'moll/vim-bbye'
-
-" code auto-completion for neovim (asynchonously)
-"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-
-" reduce code folding computation
-" Plug 'Konfekt/FastFold'
-
-" syntax diagnostic display
-Plug 'scrooloose/syntastic'
-
-" syntax highlighting for pug/jade
-" Plug 'digitaltoad/vim-pug'
 
 " auto insert brackets/quotes... in pairs
 Plug 'jiangmiao/auto-pairs'
@@ -113,8 +102,6 @@ Plug 'diepm/vim-rest-console'
 
 " additional text highlighting for javascript
 Plug 'jelera/vim-javascript-syntax'
-" This one is causing huge slowdown when commenting big block of code
-" Plug 'othree/yajs.vim'
 
 " jsx
 Plug 'maxmellon/vim-jsx-pretty'
@@ -170,33 +157,20 @@ Plug 'Vimjas/vim-python-pep8-indent'
 " Python syntax highlighting & checking
 Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 
-" completion framework
-" See https://github.com/ncm2/ncm2
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
-" completion sources for ncm2
-Plug 'ncm2/ncm2-bufword'
-" Path
-Plug 'ncm2/ncm2-path'
-" Css
-Plug 'ncm2/ncm2-cssomni'
-" Js
-" Plug 'ncm2/ncm2-tern',  {'do': 'npm install'}
-" Python
-" Needs jedi pip module.
-" Need to be careful with virtual environment, since neovim could use the
-" python environment in the venv itself!
-" For now, setting g:python3_host_prog to an absolute path is enough.
-Plug 'ncm2/ncm2-jedi'
+" Auto completion (multiple sources, including LSPs)
+Plug 'Shougo/ddc.vim'
+Plug 'vim-denops/denops.vim'
+" Sources
+Plug 'Shougo/ddc-around'
+Plug 'LumaKernel/ddc-file'
+Plug 'LumaKernel/ddc-tabnine'
+" Filters
+Plug 'Shougo/ddc-matcher_head'
+Plug 'Shougo/ddc-sorter_rank'
+Plug 'Shougo/ddc-nvim-lsp'
 
-" LSP
-" coc-settings.json is required in the current directory.
-" Specific language servers:
-" - Haskell:
-"   haskell-language-server
-"   Install: https://github.com/haskell/haskell-language-server
-"   (troubleshooting: run 'stack upgrade')
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" LSP engine
+Plug 'neovim/nvim-lspconfig'
 
 " themes/colorschemes
 "
@@ -205,7 +179,79 @@ Plug 'liuchengxu/space-vim-dark'
 
 Plug 'dikiaap/minimalist'
 
+
 call plug#end()
+
+"=========
+" Lua init
+"=========
+"
+lua << EOF
+
+nvim_lsp = require('lspconfig')
+
+local on_attach = function(_, bufnr)
+    local function buf_set_keymap(...)
+      vim.api.nvim_buf_set_keymap(bufnr, ...)
+    end
+    local function buf_set_option(...)
+      vim.api.nvim_buf_set_option(bufnr, ...)
+    end
+
+    vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+      vim.lsp.diagnostic.on_publish_diagnostics, {
+        -- disable virtual text
+        virtual_text = false,
+
+        -- show signs
+        signs = false,
+
+        -- delay update diagnostics
+        update_in_insert = false,
+      }
+    )
+
+    -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+    -- Mappings.
+    local opts = { noremap = true, silent = true }
+    -- buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+    buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+    -- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+    -- buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+    -- buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+    -- buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+    -- buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+    -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+    -- buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+    -- buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+    -- buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+    -- buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  end
+
+nvim_lsp.pyright.setup {
+	on_attach = on_attach,
+}
+
+nvim_lsp.tsserver.setup {
+	-- npm intall -g typescript-language-server
+	cmd = { "typescript-language-server", "--stdio" },
+	filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
+	init_options = {
+		hostInfo = "neovim",
+		preferences = {
+			disableSuggestions = true,
+		},
+	},
+	-- on_init = require('ncm2').register_lsp_source,
+	root_dir = nvim_lsp.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
+	on_attach = on_attach,
+}
+
+EOF
 
 "========================
 " Vim basic configuration
@@ -296,9 +342,7 @@ set hidden
 " always try to resize windows equally after splitting/closing windows
 set equalalways
 
-" maybe also add 'menuone'?
-" no preview window when auto-completing
-set completeopt-=preview
+set completeopt=noinsert,menuone,noselect
 
 " python interpreters
 " setting these options directly to be sure
@@ -389,15 +433,6 @@ nnoremap <leader><F5> :exec "source ".g:viminit<CR>
 " disable key to Ex mode
 :map Q <Nop>
 
-" Use <Tab> to cycle through auto-completion
-inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" When the <Enter> key is pressed while the popup menu is visible, it only
-" hides the menu. Use this mapping to close the menu and also start a new
-" line.
-inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-
 "================================
 " plugins specific configurations
 "================================
@@ -408,7 +443,7 @@ noremap <silent><F2> :NERDTreeToggle<CR>
 nnoremap <silent><leader><F2> :NERDTreeFind<CR>
 let g:NERDTreeChDirMode=2
 " this list is surely ongoing...
-let g:NERDTreeIgnore=['\~$', '\.o$[[file]]', '\.java$[[file]]', '\.db$[[file]]']
+let g:NERDTreeIgnore=['\~$', '\.o$[[file]]', '\.db$[[file]]']
 " for now, use the default sort settings
 " let g:NERDTreeSortOrder=[]
 let g:NERDTreeShowBookmarks=1
@@ -419,7 +454,6 @@ autocmd VimLeavePre * :NERDTreeClose
 "
 set noshowmode
 let g:airline#extensions#tabline#enabled=1
-let g:airline#extensions#syntastic#enabled=1
 let g:airline_powerline_fonts=0
 " for fugitive
 " let g:airline#entensions#branch#enabled=1
@@ -482,24 +516,6 @@ endfunction
 nnoremap <silent><F12> :MundoToggle<CR>
 let g:mundo_right=1
 let g:mundo_preview_bottom=1
-
-" syntastic
-"
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_always_populate_loc_list=1
-let g:syntastic_auto_loc_list=1
-" set to 0 so it wouldn't interfere with YCM when opening C files
-let g:syntastic_check_on_open=0
-let g:syntastic_check_on_wq=0
-" use eslint for js
-let g:syntastic_javascript_checkers=['eslint']
-" C-family files are already checked by YouCompleteMe
-noremap <silent><leader><leader>st :SyntasticToggleMode<CR>
-" syntastic seems slow, so switch it to passive mode at start
-" and switch it on manually when needed
-autocmd VimEnter * :SyntasticToggleMode
 
 " vim-easy-align
 "
@@ -609,29 +625,6 @@ let g:indexed_search_shortmess=1
 let g:indexed_search_numbered_only=1
 map <silent><F4> :ShowSearchIndex<CR>
 
-" " deoplete
-" "
-" let g:deoplete#enable_at_startup=1
-" " path texts are based from buffer (opened file path) instead of cwd
-" let g:deoplete#file#enable_buffer_path=1
-
-" vim-multiple-cursors
-"
-" avoid conflict with deoplete
-" new ver dont have this problem anymore so keep it here and monitor for now
-" remember to comment this out when not using deoplete
-" function g:Multiple_cursors_before()
-" 	call deoplete#disable()
-" endfunction
-" function g:Multiple_cursors_after()
-" 	call deoplete#enable()
-" endfunction
-
-" FastFold
-"
-" let g:fastfold_fold_command_suffixes=['c', 'o', 'R']
-" let g:fastfold_fold_movement_command=[]
-
 " vim-javascript-syntax
 "
 let g:javaScript_fold=1
@@ -641,7 +634,7 @@ autocmd VimEnter * :windo normal zR
 
 " vim-fugitive
 "
-nmap <silent><leader>gb :Gblame<CR>
+nmap <silent><leader>gb :Git blame<CR>
 
 " vim-closetag
 "
@@ -655,26 +648,55 @@ let g:semshi#error_sign=v:false
 " avoid instant re-parsing (good for large files)
 let g:semshi#update_delay_factor=0.00005
 
-" ncm2
-"
-" enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
-" :help Ncm2PopupOpen for more information
-set completeopt=noinsert,menuone,noselect
 
-" coc.nvim
+" camelcasemotion
+let g:camelcasemotion_key = 't'
+
+" ddc.vim and related plugins
 "
-" show item's documentation in a popup (if it exists)
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+call ddc#custom#patch_global('sources', ['around', 'file'])
+call ddc#custom#patch_global('sourceOptions', {
+      \ '_': {
+      \   'matchers': ['matcher_head'],
+      \   'sorters': ['sorter_rank']
+	  \ },
+      \ })
+call ddc#custom#patch_global('sourceOptions', {
+    \ 'around': {'mark': 'A'},
+      \ })
+call ddc#custom#patch_global('sourceParams', {
+      \ 'around': {'maxSize': 500},
+      \ })
+call ddc#custom#patch_filetype(['javascript', 'jsx', 'typescript'], 'sources', ['around', 'file', 'nvim-lsp', 'tabnine'])
+call ddc#custom#patch_filetype(['javascript', 'jsx', 'typescript'], 'sourceOptions', {
+	\ 'nvim-lsp': {
+	\   'mark': 'L',
+	\   'forceCompletionPattern': '\.\w*|:\w*|->\w*' ,
+	\ }
+      \ })
+call ddc#custom#patch_global('sourceOptions', {
+    \ 'file': {
+    \   'mark': 'F',
+    \   'isVolatile': v:true,
+    \   'forceCompletionPattern': '\S/\S*',
+	\ },
+	\ })
+call ddc#custom#patch_global('sources', ['tabnine'])
+call ddc#custom#patch_global('sourceOptions', {
+    \ 'tabnine': {
+    \   'mark': 'TN',
+    \   'maxCandidates': 5,
+    \   'isVolatile': v:true,
+    \ }})
+
+" <TAB>: completion.
+inoremap <silent><expr> <TAB> ddc#map#pum_visible() ? '<C-n>' : '<Tab>'
+" inoremap <silent><expr> <Tab> pumvisible() ? '\<C-n>' : '\<Tab>'
+" <S-TAB>: completion back.
+inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
+" inoremap <silent><expr> <S-Tab> pumvisible() ? '\<C-p>' : '\<S-Tab>'
+" When the <Enter> key is pressed while the popup menu is visible, it only
+" hides the menu. Use this mapping to close the menu and also start a new line.
+inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+" Use ddc.
+call ddc#enable()
