@@ -1,4 +1,5 @@
 # This should be sourced by .bashrc.
+# Extra tools needed: fdclone, tree.
 
 # Auto-completion
 # ---------------

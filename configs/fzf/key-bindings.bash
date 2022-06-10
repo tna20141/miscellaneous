@@ -74,6 +74,7 @@ bind -m emacs-standard '"\C-z": vi-editing-mode'
 
 if (( BASH_VERSINFO[0] < 4 )); then
   # CTRL-T - Paste the selected file path into the command line
+  # Remapped to CTRL-P.
   bind -m emacs-standard '"\C-p": " \C-b\C-k \C-u`__fzf_select__`\e\C-e\er\C-a\C-y\C-h\C-e\e \C-y\ey\C-x\C-x\C-f"'
   bind -m vi-command '"\C-p": "\C-z\C-t\C-z"'
   bind -m vi-insert '"\C-p": "\C-z\C-t\C-z"'
