@@ -13,8 +13,10 @@
 " - tidy (for html syntax checking)
 " - eslint npm module (for js syntax checking)
 " - deno (preferrably from github)
-"   related language servers
-"   lua
+" - related language servers
+" - lua
+" - fzf
+" - hoogle (from git, `cabal build`, `hoogle generate <--download>` to download/refresh index)
 " - to be continued...
 "
 " UPDATES: not all of these are needed as e.g. I don't code C anymore
@@ -172,6 +174,16 @@ Plug 'Shougo/ddc-nvim-lsp'
 " LSP engine
 Plug 'neovim/nvim-lspconfig'
 
+" Just fzf integration (fzf should have been installed manually and on path)
+"
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+
+
+" Hoogle integration with fzf
+"
+Plug 'monkoose/fzf-hoogle.vim'
+
 " themes/colorschemes
 "
 " space-vim-dark theme
@@ -216,8 +228,8 @@ local on_attach = function(_, bufnr)
     -- Mappings.
     local opts = { noremap = true, silent = true }
     -- buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-    buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-    buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    buf_set_keymap('n', '<space>d', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    buf_set_keymap('n', '<space>k', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
     -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
     -- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
     -- buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
@@ -225,8 +237,8 @@ local on_attach = function(_, bufnr)
     -- buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
     -- buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
     -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-    buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-    -- buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+    buf_set_keymap('n', '<space>r', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+    buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
     -- buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
     -- buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
     -- buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
@@ -249,6 +261,11 @@ nvim_lsp.tsserver.setup {
 	},
 	-- on_init = require('ncm2').register_lsp_source,
 	root_dir = nvim_lsp.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
+	on_attach = on_attach,
+}
+
+-- best to install ghcup then let it install hls, stack, everything else
+nvim_lsp.hls.setup {
 	on_attach = on_attach,
 }
 
@@ -655,7 +672,20 @@ let g:camelcasemotion_key = 't'
 
 " ddc.vim and related plugins
 "
-call ddc#custom#patch_global('sources', ['around', 'file'])
+call ddc#custom#patch_global('sources', ['around', 'file', 'tabnine'])
+call ddc#custom#patch_global('sourceOptions', {
+	\ 'nvim-lsp': {
+	\   'mark': 'L',
+	\   'forceCompletionPattern': '\.\w*|:\w*|->\w*' ,
+	\ }
+    \ })
+call ddc#custom#patch_global('sourceOptions', {
+    \ 'file': {
+    \   'mark': 'F',
+    \   'isVolatile': v:true,
+    \   'forceCompletionPattern': '\S/\S*',
+	\ },
+	\ })
 call ddc#custom#patch_global('sourceOptions', {
       \ '_': {
       \   'matchers': ['matcher_head'],
@@ -665,30 +695,17 @@ call ddc#custom#patch_global('sourceOptions', {
 call ddc#custom#patch_global('sourceOptions', {
     \ 'around': {'mark': 'A'},
       \ })
-call ddc#custom#patch_global('sourceParams', {
-      \ 'around': {'maxSize': 500},
-      \ })
-call ddc#custom#patch_filetype(['javascript', 'jsx', 'typescript'], 'sources', ['around', 'file', 'nvim-lsp', 'tabnine'])
-call ddc#custom#patch_filetype(['javascript', 'jsx', 'typescript'], 'sourceOptions', {
-	\ 'nvim-lsp': {
-	\   'mark': 'L',
-	\   'forceCompletionPattern': '\.\w*|:\w*|->\w*' ,
-	\ }
-      \ })
-call ddc#custom#patch_global('sourceOptions', {
-    \ 'file': {
-    \   'mark': 'F',
-    \   'isVolatile': v:true,
-    \   'forceCompletionPattern': '\S/\S*',
-	\ },
-	\ })
-call ddc#custom#patch_global('sources', ['tabnine'])
 call ddc#custom#patch_global('sourceOptions', {
     \ 'tabnine': {
     \   'mark': 'TN',
     \   'maxCandidates': 5,
     \   'isVolatile': v:true,
     \ }})
+call ddc#custom#patch_global('sourceParams', {
+      \ 'around': {'maxSize': 500},
+      \ })
+call ddc#custom#patch_filetype(['javascript', 'jsx', 'typescript'], 'sources', ['around', 'file', 'nvim-lsp', 'tabnine'])
+call ddc#custom#patch_filetype(['haskell', 'lhaskell'], 'sources', ['around', 'file', 'nvim-lsp', 'tabnine'])
 
 " <TAB>: completion.
 inoremap <silent><expr> <TAB> ddc#map#pum_visible() ? '<C-n>' : '<Tab>'
@@ -701,3 +718,6 @@ inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
 inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 " Use ddc.
 call ddc#enable()
+
+" fzf-hoogle
+let g:hoogle_fzf_window = {"window": "call hoogle#floatwindow(60, 240)"}
