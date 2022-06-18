@@ -179,10 +179,13 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
-
 " Hoogle integration with fzf
 "
 Plug 'monkoose/fzf-hoogle.vim'
+
+" Copilot (currently in preview stage)
+" Run `:Copilot setup` on first install
+Plug 'github/copilot.vim'
 
 " themes/colorschemes
 "
@@ -267,6 +270,16 @@ nvim_lsp.tsserver.setup {
 -- best to install ghcup then let it install hls, stack, everything else
 nvim_lsp.hls.setup {
 	on_attach = on_attach,
+}
+
+-- install `rust-analyzer` (probably download the prebuilt binary)
+require('lspconfig')['rust_analyzer'].setup{
+    on_attach = on_attach,
+    flags = lsp_flags,
+    -- Server-specific settings...
+    settings = {
+      ["rust-analyzer"] = {}
+    }
 }
 
 EOF
@@ -706,6 +719,7 @@ call ddc#custom#patch_global('sourceParams', {
       \ })
 call ddc#custom#patch_filetype(['javascript', 'jsx', 'typescript'], 'sources', ['around', 'file', 'nvim-lsp', 'tabnine'])
 call ddc#custom#patch_filetype(['haskell', 'lhaskell'], 'sources', ['around', 'file', 'nvim-lsp', 'tabnine'])
+call ddc#custom#patch_filetype(['rust'], 'sources', ['around', 'file', 'nvim-lsp', 'tabnine'])
 
 " <TAB>: completion.
 inoremap <silent><expr> <TAB> ddc#map#pum_visible() ? '<C-n>' : '<Tab>'
@@ -721,3 +735,10 @@ call ddc#enable()
 
 " fzf-hoogle
 let g:hoogle_fzf_window = {"window": "call hoogle#floatwindow(60, 240)"}
+
+" Copilot
+"
+imap <silent><script><expr> <C-F> copilot#Accept("\<CR>")
+let g:copilot_no_tab_map = v:true
+imap <silent> <C-J> <Plug>(copilot-next)
+imap <silent> <C-K> <Plug>(copilot-previous)
