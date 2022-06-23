@@ -185,7 +185,11 @@ Plug 'monkoose/fzf-hoogle.vim'
 
 " Copilot (currently in preview stage)
 " Run `:Copilot setup` on first install
-Plug 'github/copilot.vim'
+" Plug 'github/copilot.vim'
+
+" gkeep integration
+"
+Plug 'stevearc/gkeep.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " themes/colorschemes
 "
