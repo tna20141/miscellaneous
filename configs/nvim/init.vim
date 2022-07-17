@@ -189,7 +189,7 @@ Plug 'monkoose/fzf-hoogle.vim'
 
 " gkeep integration
 "
-Plug 'stevearc/gkeep.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'stevearc/gkeep.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " themes/colorschemes
 "
@@ -746,3 +746,9 @@ imap <silent><script><expr> <C-F> copilot#Accept("\<CR>")
 let g:copilot_no_tab_map = v:true
 imap <silent> <C-J> <Plug>(copilot-next)
 imap <silent> <C-K> <Plug>(copilot-previous)
+
+" tcomment_vim
+"
+" This is needed for commenting inline function body within jsx elements.
+" Not sure if this is universal, but it's the case in a nextjs project.
+call tcomment#type#Define('jsx_block',        '// %s')
