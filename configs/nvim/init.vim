@@ -157,7 +157,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'Vimjas/vim-python-pep8-indent'
 
 " Python syntax highlighting & checking
-Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+" Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 
 " Auto completion (multiple sources, including LSPs)
 Plug 'Shougo/ddc.vim'
@@ -251,6 +251,7 @@ local on_attach = function(_, bufnr)
     -- buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   end
 
+-- npm install --global pyright
 nvim_lsp.pyright.setup {
 	on_attach = on_attach,
 }
