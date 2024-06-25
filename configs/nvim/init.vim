@@ -12,7 +12,7 @@
 " - ag
 " - tidy (for html syntax checking)
 " - eslint npm module (for js syntax checking)
-" - deno (preferrably from github)
+" - deno (preferrably from github). Update by running `deno upgrade`
 " - related language servers
 " - lua
 " - fzf
@@ -30,6 +30,8 @@
 " - Update the path if necessary (update-alternatives on ubuntu)
 " - $ python3 -m pip install --upgrade pip # if necessary
 " - $ pip/pip3 install --user neovim # this probably updates python for nvim
+" - :UpdateRemotePlugins if need be.
+" - Some incompatibility with 3.12. Had to install pynvim from master `python -m pip install 'pynvim @ git+https://github.com/neovim/pynvim'`
 "================================
 
 " turn off Vi compatibility (this should be put at the beginning)
@@ -150,7 +152,6 @@ Plug 'henrik/vim-indexed-search'
 Plug 'terryma/vim-multiple-cursors'
 
 " displaying 'space character' (space only, not tab) for easy viewing
-" this changes the conceal settings, which affects json files, but fine...
 Plug 'Yggdroot/indentLine'
 
 " python indentation
@@ -162,10 +163,12 @@ Plug 'Vimjas/vim-python-pep8-indent'
 " Auto completion (multiple sources, including LSPs)
 Plug 'Shougo/ddc.vim'
 Plug 'vim-denops/denops.vim'
+Plug 'Shougo/ddc-ui-native'
+" Plug 'vim-denops/denops-helloworld.vim'
 " Sources
 Plug 'Shougo/ddc-around'
 Plug 'LumaKernel/ddc-file'
-Plug 'LumaKernel/ddc-tabnine'
+" Plug 'LumaKernel/ddc-tabnine'
 " Filters
 Plug 'Shougo/ddc-matcher_head'
 Plug 'Shougo/ddc-sorter_rank'
@@ -198,6 +201,8 @@ Plug 'liuchengxu/space-vim-dark'
 
 Plug 'dikiaap/minimalist'
 
+" graphql
+Plug 'jparise/vim-graphql'
 
 call plug#end()
 
@@ -245,7 +250,7 @@ local on_attach = function(_, bufnr)
     -- buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
     -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
     buf_set_keymap('n', '<space>r', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-    buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+    buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
     -- buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
     -- buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
     -- buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
@@ -273,19 +278,19 @@ nvim_lsp.tsserver.setup {
 }
 
 -- best to install ghcup then let it install hls, stack, everything else
-nvim_lsp.hls.setup {
-	on_attach = on_attach,
-}
+-- nvim_lsp.hls.setup {
+-- 	on_attach = on_attach,
+-- }
 
 -- install `rust-analyzer` (probably download the prebuilt binary)
-require('lspconfig')['rust_analyzer'].setup{
-    on_attach = on_attach,
-    flags = lsp_flags,
-    -- Server-specific settings...
-    settings = {
-      ["rust-analyzer"] = {}
-    }
-}
+-- require('lspconfig')['rust_analyzer'].setup{
+--     on_attach = on_attach,
+--     flags = lsp_flags,
+--     -- Server-specific settings...
+--     settings = {
+--       ["rust-analyzer"] = {}
+--     }
+-- }
 
 EOF
 
@@ -314,6 +319,8 @@ set noexpandtab
 " still need this since Yggdroot/indentLine is only for space
 set list
 exec "set listchars=tab:┆\\ "
+let g:vim_json_conceal=0
+let g:markdown_syntax_conceal=0
 
 " line numbering
 set number
@@ -383,7 +390,7 @@ set completeopt=noinsert,menuone,noselect
 " python interpreters
 " setting these options directly to be sure
 " let g:python_host_prog='/usr/bin/python'
-let g:python3_host_prog='/usr/bin/python3'
+let g:python3_host_prog='/usr/bin/python3.12'
 
 " not even sure what this does... does this just open folds at the beginning?
 set nofoldenable
@@ -546,6 +553,7 @@ function! s:CtrlPDeleteBuffer()
 		call ctrlp#clearmarkedlist()
 	endif
 endfunction
+let g:ctrlp_match_current_file = 1
 
 " vim-mundo
 "
@@ -690,9 +698,17 @@ let g:camelcasemotion_key = 't'
 
 " ddc.vim and related plugins
 "
-call ddc#custom#patch_global('sources', ['around', 'file', 'tabnine'])
+" You must set the default ui.
+" Note: native ui
+" https://github.com/Shougo/ddc-ui-native
+call ddc#custom#patch_global('ui', 'native')
+
+call ddc#custom#patch_global('sources', [
+			\ 'around',
+			\ 'file',
+	\])
 call ddc#custom#patch_global('sourceOptions', {
-	\ 'nvim-lsp': {
+	\ 'lsp': {
 	\   'mark': 'L',
 	\   'forceCompletionPattern': '\.\w*|:\w*|->\w*' ,
 	\ }
@@ -716,22 +732,27 @@ call ddc#custom#patch_global('sourceOptions', {
 call ddc#custom#patch_global('sourceOptions', {
     \ 'tabnine': {
     \   'mark': 'TN',
-    \   'maxCandidates': 5,
+    \   'maxItems': 5,
     \   'isVolatile': v:true,
     \ }})
 call ddc#custom#patch_global('sourceParams', {
       \ 'around': {'maxSize': 500},
       \ })
-call ddc#custom#patch_filetype(['javascript', 'jsx', 'typescript'], 'sources', ['around', 'file', 'nvim-lsp', 'tabnine'])
-call ddc#custom#patch_filetype(['haskell', 'lhaskell'], 'sources', ['around', 'file', 'nvim-lsp', 'tabnine'])
-call ddc#custom#patch_filetype(['rust'], 'sources', ['around', 'file', 'nvim-lsp', 'tabnine'])
+call ddc#custom#patch_filetype(['javascript', 'jsx', 'typescript'], 'sources', ['around', 'file'])
+" call ddc#custom#patch_filetype(['haskell', 'lhaskell'], 'sources', ['around', 'file', 'lsp'])
+" call ddc#custom#patch_filetype(['rust'], 'sources', ['around', 'file', 'lsp'])
+call ddc#custom#patch_filetype(['python'], 'sources', ['around', 'file'])
+" call ddc#custom#patch_filetype(['python'], 'sources', ['around', 'file', 'lsp'])
 
 " <TAB>: completion.
-inoremap <silent><expr> <TAB> ddc#map#pum_visible() ? '<C-n>' : '<Tab>'
-" inoremap <silent><expr> <Tab> pumvisible() ? '\<C-n>' : '\<Tab>'
+inoremap <silent><expr> <TAB>
+\ pumvisible() ? '<C-n>' :
+\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+\ '<TAB>' : ddc#map#manual_complete()
+
 " <S-TAB>: completion back.
-inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
-" inoremap <silent><expr> <S-Tab> pumvisible() ? '\<C-p>' : '\<S-Tab>'
+inoremap <expr><S-TAB>  pumvisible() ? '<C-p>' : '<C-h>'
+
 " When the <Enter> key is pressed while the popup menu is visible, it only
 " hides the menu. Use this mapping to close the menu and also start a new line.
 inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
