@@ -16,7 +16,6 @@
 " - related language servers
 " - lua
 " - fzf
-" - hoogle (from git, `cabal build`, `hoogle generate <--download>` to download/refresh index)
 " - to be continued...
 "
 " UPDATES: not all of these are needed as e.g. I don't code C anymore
@@ -77,8 +76,7 @@ Plug 'moll/vim-bbye'
 " auto insert brackets/quotes... in pairs
 Plug 'jiangmiao/auto-pairs'
 
-" auto closing html tag
-Plug 'alvan/vim-closetag'
+Plug 'windwp/nvim-ts-autotag'
 
 " easier block commenting
 " notable mapping keys: g
@@ -182,10 +180,6 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
-" Hoogle integration with fzf
-"
-Plug 'monkoose/fzf-hoogle.vim'
-
 " Copilot (currently in preview stage)
 " Run `:Copilot setup` on first install
 " Plug 'github/copilot.vim'
@@ -196,13 +190,14 @@ Plug 'monkoose/fzf-hoogle.vim'
 
 " themes/colorschemes
 "
-" space-vim-dark theme
-Plug 'liuchengxu/space-vim-dark'
-
 Plug 'dikiaap/minimalist'
 
 " graphql
 Plug 'jparise/vim-graphql'
+
+" treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
 
 call plug#end()
 
@@ -292,6 +287,38 @@ nvim_lsp.tsserver.setup {
 --     }
 -- }
 
+require'nvim-treesitter.configs'.setup {
+  -- Install parsers synchronously
+  ensure_installed = { "javascript", "typescript", "tsx", "html", "css", "json", "lua", "vim" },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  auto_install = true,
+
+  highlight = {
+    -- Enable highlighting
+    enable = true,
+
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+
+  indent = {
+    -- Enable indentation
+    enable = true
+  },
+  autopairs = {
+    enable = false
+  },
+}
+
+require('nvim-ts-autotag').setup()
+
 EOF
 
 "========================
@@ -313,7 +340,7 @@ set tabstop=4
 set shiftwidth=4
 " i don't like this option
 set softtabstop=0
-set noexpandtab
+" set noexpandtab
 
 " display tab characters
 " still need this since Yggdroot/indentLine is only for space
@@ -363,7 +390,6 @@ set lazyredraw
 syntax on
 
 " colorscheme
-" colorscheme space-vim-dark
 colorscheme minimalist
 
 " load ftplugins and indent files
@@ -390,7 +416,7 @@ set completeopt=noinsert,menuone,noselect
 " python interpreters
 " setting these options directly to be sure
 " let g:python_host_prog='/usr/bin/python'
-let g:python3_host_prog='/usr/bin/python3.12'
+let g:python3_host_prog='/usr/bin/python3'
 
 " not even sure what this does... does this just open folds at the beginning?
 set nofoldenable
@@ -554,6 +580,7 @@ function! s:CtrlPDeleteBuffer()
 	endif
 endfunction
 let g:ctrlp_match_current_file = 1
+command! Ctrlpcwd silent! let g:ctrlp_working_path_mode=0
 
 " vim-mundo
 "
@@ -661,6 +688,7 @@ let g:ctrlsf_auto_focus={
 "
 let g:AutoPairsCenterLine=0
 let g:AutoPairsShortcutToggle='<leader><F3>'
+let g:AutoPairsMultilineClose=0
 
 " vim-indexed-search
 "
@@ -679,11 +707,6 @@ autocmd VimEnter * :windo normal zR
 " vim-fugitive
 "
 nmap <silent><leader>gb :Git blame<CR>
-
-" vim-closetag
-"
-let g:closetag_filenames='*.html,*.js,*.jsx'
-let g:closetag_emptyTags_caseSensitive=1
 
 " semshi
 "
@@ -738,7 +761,7 @@ call ddc#custom#patch_global('sourceOptions', {
 call ddc#custom#patch_global('sourceParams', {
       \ 'around': {'maxSize': 500},
       \ })
-call ddc#custom#patch_filetype(['javascript', 'jsx', 'typescript'], 'sources', ['around', 'file'])
+call ddc#custom#patch_filetype(['javascript', 'jsx', 'typescript'], 'sources', ['around', 'file', 'lsp'])
 " call ddc#custom#patch_filetype(['haskell', 'lhaskell'], 'sources', ['around', 'file', 'lsp'])
 " call ddc#custom#patch_filetype(['rust'], 'sources', ['around', 'file', 'lsp'])
 call ddc#custom#patch_filetype(['python'], 'sources', ['around', 'file'])
@@ -758,9 +781,6 @@ inoremap <expr><S-TAB>  pumvisible() ? '<C-p>' : '<C-h>'
 inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 " Use ddc.
 call ddc#enable()
-
-" fzf-hoogle
-let g:hoogle_fzf_window = {"window": "call hoogle#floatwindow(60, 240)"}
 
 " Copilot
 "

@@ -1,0 +1,55 @@
+global !p
+def capitalize(s):
+    try:
+        return s[:1].upper() + s[1:]
+    except:
+        return "ERR"
+endglobal
+
+snippet ins "util inspect"
+console.log(require('util').inspect(${1:object}, false, null));
+endsnippet
+
+snippet cl "console log"
+console.log(${1:data});
+endsnippet
+
+snippet cc "console log exception" i
+.catch(e => { console.log(e); throw e; })
+endsnippet
+
+snippet ct "console log then" i
+.then(a => { console.log(a); return a; })
+endsnippet
+
+snippet str "json stringify"
+JSON.stringify(${1:obj})
+endsnippet
+
+snippet newp "new promise"
+new Promise((resolve, reject) => {
+  ${1:content}
+});
+endsnippet
+
+snippet i "import"
+import ${1:_} from '${2:lodash}';
+endsnippet
+
+snippet re "import"
+const ${1:_} = require('${2:lodash}');
+endsnippet
+
+snippet us "useState"
+const [${1}, set`!p
+snip.rv = capitalize(t[1])
+`] = useState(${2:false});
+endsnippet
+
+snippet cla "className"
+className=${1:{styles.}}
+endsnippet
+
+snippet onc "onclick"
+onClick={${1}}
+endsnippet
