@@ -80,7 +80,7 @@ Plug 'windwp/nvim-ts-autotag'
 
 " easier block commenting
 " notable mapping keys: g
-Plug 'tomtom/tcomment_vim'
+" Plug 'tomtom/tcomment_vim'
 
 " easily editing surroundings (brackets, tags...)
 " notable mapping keys: <action key>s
@@ -96,17 +96,17 @@ Plug 'tpope/vim-repeat'
 Plug 'ntpeters/vim-better-whitespace'
 
 " hex editor
-Plug 'fidian/hexmode'
+" Plug 'fidian/hexmode'
 
 " REST console
 " notable mapping keys: <C-j>
-Plug 'diepm/vim-rest-console'
+" Plug 'diepm/vim-rest-console'
 
 " additional text highlighting for javascript
-Plug 'jelera/vim-javascript-syntax'
+" Plug 'jelera/vim-javascript-syntax'
 
 " jsx
-Plug 'maxmellon/vim-jsx-pretty'
+" Plug 'maxmellon/vim-jsx-pretty'
 
 " tsx
 Plug 'leafgarland/typescript-vim'
@@ -153,7 +153,7 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'Yggdroot/indentLine'
 
 " python indentation
-Plug 'Vimjas/vim-python-pep8-indent'
+ Plug 'Vimjas/vim-python-pep8-indent'
 
 " Python syntax highlighting & checking
 " Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
@@ -256,20 +256,20 @@ nvim_lsp.pyright.setup {
 	on_attach = on_attach,
 }
 
-nvim_lsp.tsserver.setup {
-	-- npm intall -g typescript-language-server
+nvim_lsp.ts_ls.setup {
 	-- npm intall -g typescript
-	cmd = { "typescript-language-server", "--stdio" },
 	filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-	init_options = {
-		hostInfo = "neovim",
-		preferences = {
-			disableSuggestions = true,
-		},
-	},
 	-- on_init = require('ncm2').register_lsp_source,
 	root_dir = nvim_lsp.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
 	on_attach = on_attach,
+	init_options = {
+		hostInfo = "neovim",
+		preferences = {
+		  includeCompletionsForModuleExports = true,
+		  includeCompletionsForImportStatements = true,
+		  importModuleSpecifierPreference = "relative",
+		},
+	}
 }
 
 -- best to install ghcup then let it install hls, stack, everything else
@@ -512,7 +512,7 @@ noremap <silent><F2> :NERDTreeToggle<CR>
 nnoremap <silent><leader><F2> :NERDTreeFind<CR>
 let g:NERDTreeChDirMode=2
 " this list is surely ongoing...
-let g:NERDTreeIgnore=['\~$', '\.o$[[file]]', '\.db$[[file]]']
+let g:NERDTreeIgnore=['\~$', '\.o$[[file]]', '\.db$[[file]]', '__pycache__']
 " for now, use the default sort settings
 " let g:NERDTreeSortOrder=[]
 let g:NERDTreeShowBookmarks=1
@@ -711,9 +711,9 @@ nmap <silent><leader>gb :Git blame<CR>
 " semshi
 "
 " don't display error sign in the sign column
-let g:semshi#error_sign=v:false
-" avoid instant re-parsing (good for large files)
-let g:semshi#update_delay_factor=0.00005
+" let g:semshi#error_sign=v:false
+" " avoid instant re-parsing (good for large files)
+" let g:semshi#update_delay_factor=0.00005
 
 
 " camelcasemotion
@@ -764,7 +764,7 @@ call ddc#custom#patch_global('sourceParams', {
 call ddc#custom#patch_filetype(['javascript', 'jsx', 'typescript'], 'sources', ['around', 'file', 'lsp'])
 " call ddc#custom#patch_filetype(['haskell', 'lhaskell'], 'sources', ['around', 'file', 'lsp'])
 " call ddc#custom#patch_filetype(['rust'], 'sources', ['around', 'file', 'lsp'])
-call ddc#custom#patch_filetype(['python'], 'sources', ['around', 'file'])
+call ddc#custom#patch_filetype(['python'], 'sources', ['around', 'file', 'lsp'])
 " call ddc#custom#patch_filetype(['python'], 'sources', ['around', 'file', 'lsp'])
 
 " <TAB>: completion.
@@ -788,9 +788,3 @@ imap <silent><script><expr> <C-F> copilot#Accept("\<CR>")
 let g:copilot_no_tab_map = v:true
 imap <silent> <C-J> <Plug>(copilot-next)
 imap <silent> <C-K> <Plug>(copilot-previous)
-
-" tcomment_vim
-"
-" This is needed for commenting inline function body within jsx elements.
-" Not sure if this is universal, but it's the case in a nextjs project.
-call tcomment#type#Define('jsx_block',        '// %s')
