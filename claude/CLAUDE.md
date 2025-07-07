@@ -13,6 +13,7 @@ Short commands appear anywhere in the conversation/user input as ||<command>|| t
 - ||save||: condense the current conversation into a file of the format `claude-save-{2-to-3-words-title}.md`. Only the finalization, final decisions, and the core information should be distilled, no need for how we got the that conclusion (except if there are important information in the discovery process). Try to be complete with the information though.
 - ||clean||: this is where when writing code, you should avoid logging/try-catching and only write clean logical code. Assume errors should be bubbled up or already handled in other layers.
 - ||think||: ultrathink about the query I give you.
+- ||declarative||: Write declarative code (avoid explicit loops, forEach, push/append etc in favors of lodash, list comprehension, map etc). Recursion is also welcomed as it's more declarative than loops. In short write code that makes sense to read logically, as the problem is usually logical in nature and should eclicit a satisfying and "things falling into place feeling" kind of solution.
 
 CODING GUIDELINES (ABSOLUTELY IMPORTANT): (TODO: check if Claude actually follows these)
 ========
